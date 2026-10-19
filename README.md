@@ -23,6 +23,10 @@
 
 <img src="screens/375-light.png" alt="手機版首屏" width="300">
 
+## 怎麼判定
+
+skill 只比較描述。兩個 skill 列為「需要先處理」的條件：描述相似度 ≥ 0.50，或共用觸發詞（兩個詞，或一個引號短語）且相似度 ≥ 0.30；而且兩邊都沒有指向對方的排除說明或轉交句（例如「For …, use 另一個 skill」）。只共用觸發詞、相似度低於 0.30 的組合放在摺疊的「弱訊號」區塊，不計入結論與可節省的 token。
+
 ## 不會上傳
 
 所有計算都在你的瀏覽器裡完成：頁面不送出任何網路請求，不載入外部字型或函式庫，你的檔案不會離開你的電腦。
@@ -53,5 +57,6 @@
 
 - **Use:** open https://onholdlab.github.io/tool-twins/ (or download `index.html`), then choose your skills folder (`~/.claude/skills`), pick a file, or paste text. Or press "Try the demo".
 - **Private:** everything runs in your browser. The page makes no network requests and nothing is uploaded.
+- **How pairs are flagged:** skills are compared on their descriptions. A pair is listed under "Fix first" at similarity ≥ 0.50, or with shared trigger words (two words or one quoted phrase) at similarity ≥ 0.30, when neither side points at the other with an exclusion or a routing clause ("For …, use other-skill"). Trigger-only pairs under 0.30 sit in a collapsed "weak signal" block and are not counted.
 - **Wrong result?** Report a false alarm or a missed twin with the [wrong-result form](https://github.com/onholdlab/tool-twins/issues/new?template=wrong-result.yml) (remove sensitive content from any description you paste). Other ideas: [suggestions](https://github.com/onholdlab/tool-twins/issues/new?template=feedback.yml).
 - **License:** Apache License 2.0 (see [LICENSE](LICENSE)). Third-party demo data is credited in [NOTICE](NOTICE). The names and logos are not covered by the license.

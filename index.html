@@ -256,7 +256,7 @@ td.n{font-family:var(--f-mono);font-variant-numeric:tabular-nums}
   <details class="foot card" id="foot"><summary data-t="footH">方法與來源 · 示範資料授權（Apache-2.0、MIT）</summary>
     <p class="sub" data-t="lede">貼上 MCP 伺服器的 tools/list 結果、SKILL.md，或把整個 skills 資料夾拖進來。這個工具找出名字和描述太像、模型可能選錯的「雙胞胎」，並估算每個項目佔多少 token。全部在瀏覽器內計算，不會上傳。</p>
     <p class="note" data-t="lint">檢查工具只看單一 skill；工具雙胞胎看它們彼此之間。</p>
-    <p class="note" data-t="note">相似度用 TF-IDF 加餘弦距離，比較名稱、描述與參數名稱；英文會合併詞形（file／files）與常見同義動詞（get／fetch、delete／remove），中文用兩字詞片段。名稱開頭是已知動詞時，動作不同、或動作相同但物件互不相干的兩個工具，分數減半。這是啟發式檢查，可能誤報，也可能漏報；分數和標籤只是提示，不是定論，也不是模型實際的選擇機率。token 數是以字元數換算的估計值。</p>
+    <p class="note" data-t="note">相似度用 TF-IDF 加餘弦距離，比較名稱、描述與參數名稱；英文會合併詞形（file／files）與常見同義動詞（get／fetch、delete／remove），中文用兩字詞片段。名稱開頭是已知動詞時，動作不同、或動作相同但物件互不相干的兩個工具，分數減半。skill 只比較描述：相似度 ≥ 0.50，或共用觸發詞（兩個詞，或一個引號短語）且相似度 ≥ 0.30，而且兩邊都沒有指向對方的排除說明或轉交句（例如「For …, use 另一個 skill」）時，列為需要先處理；只共用觸發詞、相似度低於 0.30 的組合放在摺疊的弱訊號區塊。這是啟發式檢查，可能誤報，也可能漏報；分數和標籤只是提示，不是定論，也不是模型實際的選擇機率。token 數是以字元數換算的估計值。</p>
     <p class="note" data-t="tokNote">token 是估算值：英文約 4 個字元算 1 個，中日韓文約 1.25 個字元算 1 個。各模型的 tokenizer 不同，實際數字會有出入。MCP 工具計算名稱、描述與 inputSchema；skill 只計算啟動時載入的名稱與描述。</p>
     <p class="note" data-t="where">skills 放在哪：Claude Code 的個人 skills 在 ~/.claude/skills，專案層級的在 .claude/skills。其他工具據說使用 .agents/skills/ 與 .github/skills/（未經驗證）。選資料夾時只讀取裡面的 SKILL.md。</p>
     <p class="note" data-t="demoSrc">示範資料逐字取自公開 repo：skill-creator、webapp-testing 來自 github.com/anthropics/skills（Apache-2.0）；writing-skills、executing-plans、subagent-driven-development、requesting-code-review、receiving-code-review 來自 github.com/obra/superpowers（MIT，© 2025 Jesse Vincent）；browser_* 工具來自 @playwright/mcp 0.0.83（Apache-2.0，© Microsoft）；read_* 工具來自 @modelcontextprotocol/server-filesystem 2026.8.31（Apache-2.0／MIT）。</p>
@@ -284,9 +284,9 @@ zh:{h1:'工具雙胞胎',lede:'貼上 MCP 伺服器的 tools/list 結果、SKILL
  added:function(s,m){return '已加入 '+s+' 個 skill'+(m?'、'+m+' 個工具':'')+'。加入檔案不會自動分析，按「分析」開始。'},
  fromBox:'輸入框',copies:function(n,src,k,where){return '重複副本：'+n+' 載入了 '+k+' 次（'+where+'）。同一個'+(src==='skill'?' skill ':'工具')+'被載入多次，或裝在多個位置；內容相同，已合併成一項，不算衝突。'},
  rmFile:function(n){return '移除 '+n},filesSum:function(s,m){return '已加入 '+s+' 個 skill'+(m?'、'+m+' 個工具':'')},clearAll:'清除',cleared:'已清除所有檔案。按「分析」更新結果。',badFile:function(n,e){return '無法讀取 '+n+'：'+e},noFm:'找不到 SKILL.md 的 frontmatter（以 --- 開頭，含 name 與 description）。',run:'分析',demo:'載入示範',
- note:'相似度用 TF-IDF 加餘弦距離，比較名稱、描述與參數名稱；英文會合併詞形（file／files）與常見同義動詞（get／fetch、delete／remove），中文用兩字詞片段。名稱開頭是已知動詞時，動作不同、或動作相同但物件互不相干的兩個工具，分數減半。這是啟發式檢查，可能誤報，也可能漏報；分數和標籤只是提示，不是定論，也不是模型實際的選擇機率。token 數是以字元數換算的估計值。',
+ note:'相似度用 TF-IDF 加餘弦距離，比較名稱、描述與參數名稱；英文會合併詞形（file／files）與常見同義動詞（get／fetch、delete／remove），中文用兩字詞片段。名稱開頭是已知動詞時，動作不同、或動作相同但物件互不相干的兩個工具，分數減半。skill 只比較描述：相似度 ≥ 0.50，或共用觸發詞（兩個詞，或一個引號短語）且相似度 ≥ 0.30，而且兩邊都沒有指向對方的排除說明或轉交句（例如「For …, use 另一個 skill」）時，列為需要先處理；只共用觸發詞、相似度低於 0.30 的組合放在摺疊的弱訊號區塊。這是啟發式檢查，可能誤報，也可能漏報；分數和標籤只是提示，不是定論，也不是模型實際的選擇機率。token 數是以字元數換算的估計值。',
  tagAct:'同物件、不同動作',tagObj:'同動作、不同物件',tagSub:'同物件、不同子資源',tagRef:'描述已互相指引',
- sigTitle:'Skill 訊號',sigTrig:'共用觸發詞：',sigNoTrig:'沒有共用觸發詞',exBoth:'雙向已說明',exOne:function(n){return '單向（建議 '+n+' 補上排除說明）'},exNone:'未偵測到指向對方的排除說明',exFound:function(n){return n+' 的排除句：'},exNoneFound:'沒有找到排除句',exUsed:function(by,w,cue){return '判定採用這句：命中'+{name:'完整名稱',words:'名稱詞',anchor:'代表詞'}[by]+'「'+w+'」，轉交詞「'+cue+'」'},
+ sigTitle:'Skill 訊號',sigTrig:'共用觸發詞：',sigNoTrig:'沒有共用觸發詞',exBoth:'雙向已說明',exOne:function(n){return '單向（建議 '+n+' 補上排除說明）'},exNone:'未偵測到指向對方的排除說明',exFound:function(n){return n+' 的排除句：'},exNoneFound:'沒有找到排除句',exUsed:function(by,w,cue){return '判定採用這句：命中'+{name:'完整名稱',words:'名稱詞',anchor:'代表詞',handoff:'轉交句中的完整名稱'}[by]+'「'+w+'」，轉交詞「'+cue+'」'},
  sugAdd:function(n){return '在 '+n+' 的描述補上一句：'},sugWords:function(b,wb,a,wa){return '可參考的詞，'+b+'：'+(wb.join('、')||'—')+'；'+a+'：'+(wa.join('、')||'—')},sugMerge:'兩邊的描述幾乎沒有各自獨有的詞，考慮合併成一個。',copy:'複製',copied:'已複製',copyFail:'無法複製，請手動選取',fam:'同家族',famSub:'名稱只差一個子資源詞（files、comments、reviews…），處理的是同一物件的不同部分，不算雙胞胎。在描述裡寫清楚各自處理哪個部分即可。',
  bodyTok:function(n){return '本文 ≈'+n+'（使用時才載入，不計入總量）'},tokNote:'token 是估算值：英文約 4 個字元算 1 個，中日韓文約 1.25 個字元算 1 個。各模型的 tokenizer 不同，實際數字會有出入。MCP 工具計算名稱、描述與 inputSchema；skill 只計算啟動時載入的名稱與描述。',
  tagline:'檢查你的 skills 會不會互相搶觸發',lint:'檢查工具只看單一 skill；工具雙胞胎看它們彼此之間。',tryDemo:'用示範試試看',
@@ -294,7 +294,8 @@ zh:{h1:'工具雙胞胎',lede:'貼上 MCP 伺服器的 tools/list 結果、SKILL
  heur:'這是啟發式檢查，可能誤報，也可能漏報；分數和標籤只是提示，不是定論。',
  artSim:'相似度 0.40',artBoth:'已互相說明',
  vClean:function(n){return '這 '+n+' 項彼此分得很清楚：沒有會互相搶觸發的組合，該說明的也都說明了。目前不需要處理。'},
- vBetter:function(one,weak){return '沒有會互相搶觸發的組合，這點做得很好。還可以更好：'+[one?one+' 組只有一邊說明':'',weak?weak+' 個項目說明不足':''].filter(Boolean).join('、')+'。'},
+ vBetter:function(one,weak,trig){var more=[one?one+' 組只有一邊說明':'',weak?weak+' 個項目說明不足':''].filter(Boolean).join('、');return (trig?S.zh.noFix+S.zh.weakNote(trig):'沒有會互相搶觸發的組合，這點做得很好。')+(more?'還可以更好：'+more+'。':'')},
+ noFix:'沒有需要先處理的組合。',weakNote:function(n){return '另有 '+n+' 組只共用少數詞的弱訊號，可選擇查看，其中可能仍有容易混淆的組合。'},tWeak:'弱訊號（只共用少數詞，未列入需要先處理）',
  vRisky:function(n,ok,both,k){return '在 '+n+' 項中，'+ok+' 項沒有和別人搶觸發'+(both?'，'+both+' 組已互相說明':'')+'。有 '+k+' 組容易互相搶觸發，建議先處理。'},
  trust:'全部在你的瀏覽器計算，不會上傳',mobileNote:'手機上請用「用示範試試看」或貼上文字；選資料夾請改用電腦。',repoLink:'原始碼與回報問題',vH:'結論',stackLabel:function(top){return '每個項目佔的 token 比例；最大的三個：'+top},nItems:'項目',nTok:'每次對話先佔用 token（估）',nFix:'需要處理的組數',
  laneFix:'需要先處理',laneBetter:'可以更好',laneDone:'已經做對',laneBetterNone:'沒有需要補強的地方。',
@@ -303,9 +304,9 @@ zh:{h1:'工具雙胞胎',lede:'貼上 MCP 伺服器的 tools/list 結果、SKILL
  copySug:'複製建議句',rawH:'看原文與判定依據',detailsH:'細節：統計、熱圖、相似清單與每項檢查',
  topH:'先處理這幾組',topSub:'名稱或描述很像、或會被同一句話觸發，而且未偵測到指向對方的排除說明。描述較具體、含排除說明的那個通常比較清楚；要留哪個由你決定。',noRisk:'沒有發現容易互相搶觸發的雙胞胎。',
  whySim:function(s){return '名稱和描述很像（相似度 '+s+'），模型可能選錯。'},whyTrig:function(w){return '同一句請求可能同時觸發兩者（共用觸發詞：'+w+'）。'},whyNoEx:'未偵測到指向對方的排除說明。',
- save:function(a,x,b,y){return '移除 '+a+' 約省 '+x+' token；移除 '+b+' 約省 '+y+' token（估）。'},more:function(n){return '另有 '+n+' 組高風險未列出，見下方清單。'},
+ save:function(a,x,b,y){return '移除 '+a+' 約省 '+x+' token；移除 '+b+' 約省 '+y+' token（估）。'},more:function(n){return '另有 '+n+' 組高風險未列出，見下方清單。'},moreTrig:function(n){return '顯示更多（還有 '+n+' 組）'},
  tItems:'項目數',tRisk:'高風險 pair',tSave:'可節省 token（估）',
- trigOnlyH:'只共用觸發詞（整體相似度低於 0.2）',trigOnlySub:'這些組合有共用的觸發詞，但描述整體不像，所以不列為高風險，也不計入可節省 token。',
+ trigOnlyH:'弱訊號：只共用觸發詞（整體相似度低於 0.30）',trigOnlySub:'這些組合有共用的觸發詞，但描述整體相似度低於 0.30，訊號太弱，所以不列入「需要先處理」，也不計入可節省 token。',
  oneH:'只有一邊說明',oneSub:'其中一邊已說明何時改用另一邊，另一邊還沒有。替還沒說明的那邊補上排除說明即可。',
  bothH:'雙向已說明',bothSub:'兩邊的描述都已指出何時改用對方，通常不需要再處理。',
  rep:'Markdown 報告（可貼進 PR）',repZh:'複製報告（中文）',repEn:'Copy report (English)',repPrev:'預覽報告',
@@ -329,9 +330,9 @@ en:{h1:'Tool Twins',lede:'Paste an MCP server\'s tools/list result or SKILL.md f
  added:function(s,m){return 'Added '+s+' skill'+(s===1?'':'s')+(m?' and '+m+' tool'+(m===1?'':'s'):'')+'. Adding files does not analyze them; press Analyze to start.'},
  fromBox:'input box',copies:function(n,src,k,where){return 'Duplicate copies: '+n+' was loaded '+k+' times ('+where+'). The same '+(src==='skill'?'skill':'tool')+' is loaded more than once or installed in several places; the content is identical, so it counts as one item, not a conflict.'},
  rmFile:function(n){return 'Remove '+n},filesSum:function(s,m){return 'Added '+s+' skill'+(s===1?'':'s')+(m?' and '+m+' tool'+(m===1?'':'s'):'')},clearAll:'Clear',cleared:'Removed all files. Press Analyze to update the results.',badFile:function(n,e){return 'Could not read '+n+': '+e},noFm:'No SKILL.md frontmatter found (starts with --- and has name and description).',run:'Analyze',demo:'Load demo',
- note:'Similarity is TF-IDF with cosine distance over names, descriptions and parameter names. English word forms (file/files) and common synonym verbs (get/fetch, delete/remove) are merged; Chinese uses two-character fragments. When names start with a known verb, pairs with different actions, or the same action on unrelated objects, have their score halved. It is a heuristic and can raise false alarms or miss real twins: scores and tags are hints, not verdicts, and not the model\'s real choice probability. Token counts are estimated from character counts.',
+ note:'Similarity is TF-IDF with cosine distance over names, descriptions and parameter names. English word forms (file/files) and common synonym verbs (get/fetch, delete/remove) are merged; Chinese uses two-character fragments. When names start with a known verb, pairs with different actions, or the same action on unrelated objects, have their score halved. Skills are compared on their descriptions: a pair is listed under Fix first at similarity ≥ 0.50, or with shared trigger words (two words or one quoted phrase) at similarity ≥ 0.30, when neither side points at the other with an exclusion or a routing clause ("For …, use other-skill"); trigger-only pairs under 0.30 sit in the collapsed weak-signal block. It is a heuristic and can raise false alarms or miss real twins: scores and tags are hints, not verdicts, and not the model\'s real choice probability. Token counts are estimated from character counts.',
  tagAct:'same object, different action',tagObj:'same action, different object',tagSub:'same object, different sub-resource',tagRef:'descriptions point to each other',
- sigTitle:'Skill signals',sigTrig:'Shared trigger words: ',sigNoTrig:'No shared trigger words',exBoth:'Both sides say when not to use it',exOne:function(n){return 'One side only (suggest adding an exclusion to '+n+')'},exNone:'No exclusion pointing at the other was detected',exFound:function(n){return 'Exclusion sentences in '+n+': '},exNoneFound:'none found',exUsed:function(by,w,cue){return 'decided by this one: matched '+{name:'full name',words:'name words',anchor:'anchor word'}[by]+' "'+w+'", hand-off cue "'+cue+'"'},
+ sigTitle:'Skill signals',sigTrig:'Shared trigger words: ',sigNoTrig:'No shared trigger words',exBoth:'Both sides say when not to use it',exOne:function(n){return 'One side only (suggest adding an exclusion to '+n+')'},exNone:'No exclusion pointing at the other was detected',exFound:function(n){return 'Exclusion sentences in '+n+': '},exNoneFound:'none found',exUsed:function(by,w,cue){return 'decided by this one: matched '+{name:'full name',words:'name words',anchor:'anchor word',handoff:'full name in a routing clause'}[by]+' "'+w+'", hand-off cue "'+cue+'"'},
  sugAdd:function(n){return 'Add a line to the description of '+n+':'},sugWords:function(b,wb,a,wa){return 'Words to consider, '+b+': '+(wb.join(', ')||'—')+'; '+a+': '+(wa.join(', ')||'—')},sugMerge:'The two descriptions have almost no words of their own; consider merging them.',copy:'Copy',copied:'Copied',copyFail:'Could not copy; select the text instead',fam:'Same family',famSub:'These names differ only by a sub-resource word (files, comments, reviews…): different parts of one object, not twins. Say in each description which part it handles.',
  bodyTok:function(n){return 'body ≈'+n+' (loaded only when used, not in the total)'},tokNote:'Tokens are estimates: about 4 characters per token for English and about 1.25 for Chinese, Japanese and Korean. Every model\'s tokenizer differs, so real counts will vary. MCP tools count name, description and inputSchema; skills count only the name and description loaded at startup.',
  tagline:'Check whether your skills compete for the same requests',lint:'Linters check each skill alone. Tool Twins checks them against each other.',tryDemo:'Try the demo',
@@ -339,7 +340,8 @@ en:{h1:'Tool Twins',lede:'Paste an MCP server\'s tools/list result or SKILL.md f
  heur:'This is a heuristic check: it can raise false alarms or miss real twins. Scores and tags are hints, not verdicts.',
  artSim:'similarity 0.40',artBoth:'explain each other',
  vClean:function(n){return 'These '+n+' items are clearly apart: none compete for the same requests, and the ones that need it say when not to use them. Nothing to fix.'},
- vBetter:function(one,weak){return 'Nothing competes for the same requests, which is good. Could be better: '+[one?one+' pair'+(one===1?'':'s')+' explained on one side only':'',weak?weak+' item'+(weak===1?'':'s')+' under-documented':''].filter(Boolean).join(', ')+'.'},
+ vBetter:function(one,weak,trig){var more=[one?one+' pair'+(one===1?'':'s')+' explained on one side only':'',weak?weak+' item'+(weak===1?'':'s')+' under-documented':''].filter(Boolean).join(', ');return (trig?S.en.noFix+' '+S.en.weakNote(trig):'Nothing competes for the same requests, which is good.')+(more?' Could be better: '+more+'.':'')},
+ noFix:'No pairs to fix first.',weakNote:function(n){return n===1?'1 more pair shares only a few words (a weak signal); you can review it, and it may still be easy to confuse.':n+' more pairs share only a few words (weak signals); you can review them, and some may still be easy to confuse.'},tWeak:'Weak signals (only a few shared words, not under Fix first)',
  vRisky:function(n,ok,both,k){return ok+' of '+n+' items compete with nothing'+(both?' and '+both+' pair'+(both===1?' explains':'s explain')+' each other':'')+'. '+k+' pair'+(k===1?' competes':'s compete')+' for the same requests; fix '+(k===1?'it':'those')+' first.'},
  trust:'Everything runs in your browser; nothing is uploaded',mobileNote:'On a phone, use Try the demo or paste text; to choose a folder, use a computer.',repoLink:'Source code and issues',vH:'Summary',stackLabel:function(top){return 'Each item\'s share of the tokens; the three largest: '+top},nItems:'items',nTok:'tokens loaded per conversation (est.)',nFix:'pairs to fix',
  laneFix:'Fix first',laneBetter:'Could be better',laneDone:'Done right',laneBetterNone:'Nothing to strengthen.',
@@ -348,9 +350,9 @@ en:{h1:'Tool Twins',lede:'Paste an MCP server\'s tools/list result or SKILL.md f
  copySug:'Copy suggestion',rawH:'Show original sentences and evidence',detailsH:'Details: totals, heatmap, similar pairs and per-item checks',
  topH:'Fix these first',topSub:'Names or descriptions are alike, or one request could trigger both, and no exclusion pointing at the other was detected. The one with the more specific description and an exclusion is usually clearer; which to keep is your call.',noRisk:'No twins found that would compete for the same requests.',
  whySim:function(s){return 'The names and descriptions are alike (similarity '+s+'), so a model may pick the wrong one.'},whyTrig:function(w){return 'One request could trigger both (shared trigger words: '+w+').'},whyNoEx:'No exclusion pointing at the other was detected.',
- save:function(a,x,b,y){return 'Removing '+a+' saves about '+x+' tokens; removing '+b+' saves about '+y+' (est.).'},more:function(n){return n+' more high-risk pairs are not listed here; see the list below.'},
+ save:function(a,x,b,y){return 'Removing '+a+' saves about '+x+' tokens; removing '+b+' saves about '+y+' (est.).'},more:function(n){return n+' more high-risk pairs are not listed here; see the list below.'},moreTrig:function(n){return 'Show more ('+n+' more)'},
  tItems:'items',tRisk:'high-risk pairs',tSave:'tokens you could save (est.)',
- trigOnlyH:'Shared trigger words only (overall similarity under 0.2)',trigOnlySub:'These pairs share some trigger words but their descriptions are not alike overall, so they are not high risk and not counted in the savings.',
+ trigOnlyH:'Weak signal: shared trigger words only (overall similarity under 0.30)',trigOnlySub:'These pairs share trigger words but their descriptions are less than 0.30 alike overall, too weak a signal to list under Fix first or count in the savings.',
  oneH:'One side explained',oneSub:'One description already says when to use the other; the other does not yet. Add an exclusion to the side that lacks one.',
  bothH:'Both sides explained',bothSub:'Each description already says when to use the other, so these usually need nothing more.',
  rep:'Markdown report (for a PR)',repZh:'複製報告（中文）',repEn:'Copy report (English)',repPrev:'Preview report',
@@ -558,20 +560,33 @@ function pointsTo(s,other,self,names,ao,as){
   var hit=Object.keys(ao||{}).filter(function(w){return !(as||{})[w]&&(namedIn(low,w)||namedIn(low,w+'s'))})[0];
   return hit?{by:'anchor',word:hit}:null;
 }
-// the first exclusion sentence of self that points at other, with how it matched and the hand-off cue that made it an exclusion
-function evidence(ex,other,self,names,ao,as){
+// rules-v3: routing clauses that send a scope to another item without "not for" or "instead":
+// "For <scope>, use <name>", "…; for <scope> see <name>". The clause starts the sentence or follows ; or , and begins with "for";
+// at most 12 words (commas allowed) lead to "use" or "see" and a name. Only another loaded item's exact full name counts.
+// "Use when …" trigger clauses never match (they do not start with "for"), nor does "after this, use X" (out of scope).
+var HANDOFF=/(?:^|[;,]\s*)for\s+(?:\S+\s+){0,12}?(?:use|see)\s+([A-Za-z0-9](?:[\w.-]*[A-Za-z0-9])?)/gi;
+function handoffs(desc){
+  var out=[];
+  sentences(desc).forEach(function(s){var m;HANDOFF.lastIndex=0;while((m=HANDOFF.exec(s)))out.push({s:s,target:m[1],cue:m[0].replace(/^[;,]\s*/,'')})});
+  return out;
+}
+function sameName(a,b){var n=function(x){return String(x).toLowerCase().replace(/[-_]+/g,' ')};return n(a)===n(b)}
+// the first exclusion sentence of self that points at other, with how it matched and the hand-off cue that made it an exclusion;
+// failing that, the first routing clause (hs) that names other in full
+function evidence(ex,other,self,names,ao,as,hs){
   for(var k=0;k<ex.length;k++){var v=pointsTo(ex[k],other,self,names,ao,as);if(v){v.s=ex[k];v.cue=(ex[k].match(EXCL)||[''])[0];return v}}
+  for(k=0;k<(hs||[]).length;k++)if(sameName(hs[k].target,other.name))return {by:'handoff',word:other.name,s:hs[k].s,cue:hs[k].cue};
   return null;
 }
 // 'both': each description excludes the other; 'ab': only a's does (b should add one); 'ba': only b's; 'none'
-function exclState(a,b,ea,eb,names,aa,ab){
-  var x=evidence(ea,b,a,names,ab,aa),y=evidence(eb,a,b,names,aa,ab);
+function exclState(a,b,ea,eb,names,aa,ab,ha,hb){
+  var x=evidence(ea,b,a,names,ab,aa,ha),y=evidence(eb,a,b,names,aa,ab,hb);
   return x&&y?'both':x?'ab':y?'ba':'none';
 }
 function analyze(tools){
   setNS(tools);var docs=tools.map(docOf),N=docs.length,df={};
   var trig=tools.map(function(x){return triggers(x.description)}),exc=tools.map(function(x){return exclusions(x.description)}),names=tools.map(function(x){return x.name});
-  var anc=tools.map(function(x,k){return anchors(x,exc[k])});
+  var anc=tools.map(function(x,k){return anchors(x,exc[k])}),hand=tools.map(function(x){return handoffs(x.description)});
   // a word in more than a third of the loaded descriptions does not tell two items apart, so it is no shared trigger;
   // the floor of 2 keeps small sets meaningful (with 2-6 items, a word both share would otherwise always be "common")
   var ddf={},COMMON=Math.max(2,N/3);
@@ -595,7 +610,7 @@ function analyze(tools){
     M[i].push(s);
     var skill=tools[i].source==='skill'||tools[j].source==='skill',tw=[];
     // same rule as exclState, kept with its evidence so the page can show which sentence decided it
-    var e1=evidence(exc[i],tools[j],tools[i],names,anc[j],anc[i]),e2=evidence(exc[j],tools[i],tools[j],names,anc[i],anc[j]);
+    var e1=evidence(exc[i],tools[j],tools[i],names,anc[j],anc[i],hand[i]),e2=evidence(exc[j],tools[i],tools[j],names,anc[i],anc[j],hand[j]);
     // shared trigger words and quoted phrases are a skill signal: MCP descriptions rarely carry trigger clauses
     if(skill){
       Object.keys(trig[i].phrases).forEach(function(q){if(trig[j].phrases[q])tw.push('"'+q+'"')});
@@ -605,7 +620,7 @@ function analyze(tools){
       skill:skill,trig:tw,trigQ:tw.filter(function(w){return w[0]==='"'}).length,excl:e1&&e2?'both':e1?'ab':e2?'ba':'none',ev:[e1,e2]});
   }}
   pairs.sort(function(a,b){return b.s-a.s});
-  return {M:M,pairs:pairs,docs:docs,vecs:vecs,exc:exc};
+  return {M:M,pairs:pairs,docs:docs,vecs:vecs,exc:exc,hand:hand};
 }
 // the n highest-weight words of item i that item j's text lacks; function words are skipped (display only, scores are untouched)
 function distinct(R,i,j,n){
@@ -648,8 +663,10 @@ function bodyEst(x){return x.source==='skill'&&x.body?estTok(x.body):0}
 var TOP=5; // the first screen shows only a few pairs
 function trigSig(p){return p.skill&&(p.trigQ>=1||p.trig.length-p.trigQ>=2)}
 function signal(p){return p.tag!=='sub'&&(p.s>=0.5||trigSig(p))}
-// shared triggers alone make a pair high risk only when the descriptions are also somewhat alike overall
-var TRIG_MIN_SIM=0.2;
+// shared triggers (two words, or one quoted phrase) alone make a pair high risk only when the descriptions are also alike overall:
+// rules-v3 raised this from 0.20 to 0.30; below it the pair goes to the collapsed weak-signal block. Similarity >= 0.50 is unaffected.
+var TRIG_MIN_SIM=0.3;
+var TRIG_SHOW=20; // weak-signal pairs shown before "Show more"
 function isRisk(p){return p.excl==='none'&&p.tag!=='sub'&&(p.s>=0.5||trigSig(p)&&p.s>=TRIG_MIN_SIM)}
 // shared triggers but little else in common: kept out of the top list, shown in a collapsed block
 function isTrigOnly(p){return p.excl==='none'&&p.tag!=='sub'&&p.s<TRIG_MIN_SIM&&trigSig(p)}
@@ -721,8 +738,11 @@ function report(R,tools,A,lg){
     '- '+T.tItems+': '+tools.length+' (MCP '+(tools.length-ns)+', skill '+ns+')',
     '- '+T.tTok+': ≈'+tot.toLocaleString(),
     '- '+T.tRisk+': '+A.risky.length,
+    '- '+T.tWeak+': '+R.pairs.filter(isTrigOnly).length,
     '- '+T.tSave+': ≈'+saveText(A),'','### '+T.topH,''];
-  if(!A.top.length)o.push(T.noRisk);
+  // with weak signals present, an empty top list is not an all-clear
+  var trig=R.pairs.filter(isTrigOnly).length;
+  if(!A.top.length)o.push(trig?T.noFix+(lg==='zh'?'':' ')+T.weakNote(trig):T.noRisk);
   A.top.forEach(function(p,k){
     var a=tools[p.i],b=tools[p.j];
     o.push((k+1)+'. **'+md(a.name)+'** ('+src(a)+') ↔ **'+md(b.name)+'** ('+src(b)+') · '+p.s.toFixed(2),'   - '+md(why(p,lg)));
@@ -758,7 +778,7 @@ function show(tools,copies){
   // each side's exclusion sentences, verbatim, whatever the detector concluded, so the user can judge the pointer themselves
   function exHtml(p){
     return '<ul class="exq">'+[p.i,p.j].map(function(k,side){
-      var ss=R.exc[k],ev=p.ev&&p.ev[side];
+      var ss=R.exc[k].concat(R.hand[k].map(function(x){return x.s}).filter(function(s,n,a){return R.exc[k].indexOf(s)<0&&a.indexOf(s)===n})),ev=p.ev&&p.ev[side];
       return '<li>'+esc(S[L].exFound(tools[k].name))+(ss.length?ss.map(function(s){
         return '<q>'+esc(s)+'</q>'+(ev&&ev.s===s?' <span class="badge mid used">'+esc(S[L].exUsed(ev.by,ev.word,ev.cue))+'</span>':'');
       }).join(' '):'<span class="sub">'+t('exNoneFound')+'</span>')+'</li>';
@@ -775,6 +795,7 @@ function show(tools,copies){
     }).join('');
   }
   // pair card: both names as tags, a similarity bar between them, shared words as chips, then the card's own body
+  function trigCard(p){return pairCard(p,'<div class="sig">'+t('sigTrig')+esc(p.trig.slice(0,8).join(t('sep')))+'</div>')}
   function pairCard(p,body){
     var pc=Math.round(Math.min(1,p.s)*100);
     return '<div class="pair" data-i="'+p.i+'" data-j="'+p.j+'"><div class="duo"><span class="name">'+nm(tools[p.i])+'</span>'+
@@ -813,9 +834,9 @@ function show(tools,copies){
   var order=tools.map(function(x){return {x:x,v:tokenEst(x)}}).sort(function(a,b){return b.v-a.v}),max=order.length?order[0].v||1:1;
 
   // conclusion: what is right first, then what to handle; three numbers and a thin stacked bar of each item's token share
-  var state=A.risky.length?'risky':(oneP.length||weak)?'better':'clean',inRisk={};
+  var state=A.risky.length?'risky':(oneP.length||weak||trigP.length)?'better':'clean',inRisk={};
   A.risky.forEach(function(p){inRisk[p.i]=inRisk[p.j]=1});
-  var say=state==='risky'?S[L].vRisky(N,N-Object.keys(inRisk).length,bothP.length,A.risky.length):state==='better'?S[L].vBetter(oneP.length,weak):S[L].vClean(N);
+  var say=state==='risky'?S[L].vRisky(N,N-Object.keys(inRisk).length,bothP.length,A.risky.length):state==='better'?S[L].vBetter(oneP.length,weak,trigP.length):S[L].vClean(N);
   h+='<section class="card verdict '+state+'" data-state="'+state+'" aria-labelledby="vh"><h2 id="vh" class="sr">'+t('vH')+'</h2><div class="verdict-h">'+ICON[state]+'<p>'+esc(say)+'</p></div>'+
      '<div class="nums">'+num(N,'nItems')+num(tot,'nTok','≈')+num(A.risky.length,'nFix')+'</div>'+
      '<div class="stack" role="img" aria-label="'+esc(S[L].stackLabel(order.slice(0,3).map(function(o){return o.x.name}).join(t('sep'))))+'">'+order.map(function(o,k){
@@ -826,7 +847,7 @@ function show(tools,copies){
 
   // lane 1: fix first (the top list); with nothing to fix it shrinks to one line
   var fixH='<section class="card lane fix top" aria-label="'+esc(t('laneFix'))+'">';
-  if(!A.top.length)fixH+='<div class="lane-h">'+ICON.risky+'<h2>'+t('laneFix')+'</h2><span class="count">0</span><span class="sub ok">'+t('noRisk')+'</span></div>';
+  if(!A.top.length)fixH+='<div class="lane-h">'+ICON.risky+'<h2>'+t('laneFix')+'</h2><span class="count">0</span>'+(trigP.length?'<span class="sub">'+esc(t('noFix')+(L==='zh'?'':' ')+S[L].weakNote(trigP.length))+'</span>':'<span class="sub ok">'+t('noRisk')+'</span>')+'</div>';
   else{
     fixH+=laneHead('risky','laneFix',A.risky.length)+'<p class="sub">'+t('topSub')+'</p>';
     A.top.forEach(function(p){
@@ -839,7 +860,7 @@ function show(tools,copies){
 
   // lane 2: could be better (one side explained, under-documented items, trigger words only)
   var betterH='<section class="card lane better" aria-label="'+esc(t('laneBetter'))+'">'+laneHead('better','laneBetter',oneP.length+weak);
-  if(!oneP.length&&!weak)betterH+='<p class="sub ok">'+t('laneBetterNone')+'</p>';
+  if(!oneP.length&&!weak&&!trigP.length)betterH+='<p class="sub ok">'+t('laneBetterNone')+'</p>';
   if(oneP.length){
     betterH+='<div class="block one"><h3>'+t('oneH')+' <span class="sub">'+oneP.length+'</span></h3><p class="sub">'+t('oneSub')+'</p>'+oneP.map(function(p){
       return pairCard(p,'<div class="sig"><span class="iss">'+exLabel(p)+'</span>'+(p.trig.length?t('isep')+t('sigTrig')+esc(p.trig.slice(0,8).join(t('sep'))):'')+'</div>'+sugHtml(p)+rawHtml(p));
@@ -852,7 +873,8 @@ function show(tools,copies){
   }
   if(trigP.length){
     betterH+='<details class="block trigonly"><summary><h3>'+t('trigOnlyH')+'</h3><span class="sub">'+trigP.length+'</span></summary><p class="sub">'+t('trigOnlySub')+'</p>';
-    trigP.forEach(function(p){betterH+=pairCard(p,'<div class="sig">'+t('sigTrig')+esc(p.trig.slice(0,8).join(t('sep')))+'</div>')});
+    // large sets can have hundreds of weak signals: the first TRIG_SHOW are rendered, the rest only when asked for
+    betterH+=trigP.slice(0,TRIG_SHOW).map(trigCard).join('')+(trigP.length>TRIG_SHOW?'<button class="btn s trig-more" type="button">'+esc(S[L].moreTrig(trigP.length-TRIG_SHOW))+'</button>':'');
     betterH+='</details>';
   }
   betterH+='</section>';
@@ -932,6 +954,11 @@ function show(tools,copies){
     copyText(report(R,tools,A,lg)).then(function(){b.textContent=S[lg].copied},function(){b.textContent=S[lg].copyFail});
     setTimeout(function(){b.textContent=label},2000);
   }});
+  var mb=$('#out .trig-more');
+  if(mb)mb.onclick=function(){
+    mb.insertAdjacentHTML('beforebegin',trigP.slice(TRIG_SHOW).map(trigCard).join(''));
+    var f=mb.parentNode.querySelectorAll('.pair')[TRIG_SHOW];mb.remove();f.setAttribute('tabindex','-1');f.focus();
+  };
   countUp();
   var tip=$('#tip');
   document.querySelectorAll('.cell[data-i]').forEach(function(c){
