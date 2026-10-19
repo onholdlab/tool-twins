@@ -1,0 +1,11 @@
+name: 建議與其他 · Suggestions and other
+description: 功能建議、使用上的問題，或任何想說的。 / Feature ideas, usability problems, anything else.
+labels: ["feedback"]
+body:
+  - type: textarea
+    id: feedback
+    attributes:
+      label: 想說什麼 · What would you like to tell us
+      description: 若附上 skill 或工具的描述，請先去除敏感內容。 / If you include descriptions, remove sensitive content first.
+    validations:
+      required: true

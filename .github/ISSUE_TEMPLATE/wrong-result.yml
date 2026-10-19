@@ -1,0 +1,61 @@
+name: 誤報／漏報 · Wrong result
+description: 工具把不該列出的組合判成雙胞胎，或漏掉了真的會搶觸發的組合。 / A pair was flagged that should not be, or a real twin was missed.
+title: "[誤報/漏報] A ↔ B"
+labels: ["wrong-result"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        謝謝回報！貼描述之前，請先去除敏感內容（公司或客戶名稱、內部網址、帳號、金鑰等）。
+        Thanks! Before pasting any description, remove sensitive content (company or customer names, internal URLs, accounts, keys).
+  - type: input
+    id: item_a
+    attributes:
+      label: 項目 A 的名稱 · Item A name
+      placeholder: 例如 pdf-forms
+    validations:
+      required: true
+  - type: input
+    id: item_b
+    attributes:
+      label: 項目 B 的名稱 · Item B name
+      placeholder: 例如 pdf-editor
+    validations:
+      required: true
+  - type: dropdown
+    id: kind
+    attributes:
+      label: 哪一種問題 · Kind of problem
+      options:
+        - 誤報：不像，卻被列為高風險或相似 · False alarm
+        - 漏報：真的會搶觸發，卻沒被列出 · Missed twin
+        - 排除說明判錯（雙向／單向／未偵測） · Exclusion judged wrong
+        - 其他 · Other
+    validations:
+      required: true
+  - type: textarea
+    id: tool_said
+    attributes:
+      label: 工具判斷是什麼 · What the tool said
+      description: 相似度、出現在哪一條道（需要先處理／可以更好／已經做對）、標籤或理由。 / Similarity, which lane, tags or reason shown.
+    validations:
+      required: true
+  - type: textarea
+    id: why_wrong
+    attributes:
+      label: 你認為哪裡不對 · What you think is wrong
+      description: 例如「這兩個用途完全不同」或「它們會被同一句話觸發」。 / For example "they do different things" or "one request triggers both".
+    validations:
+      required: true
+  - type: textarea
+    id: desc_a
+    attributes:
+      label: （可選）項目 A 的描述 · (Optional) Item A description
+      description: 請先去除敏感內容。 / Remove sensitive content first.
+      render: text
+  - type: textarea
+    id: desc_b
+    attributes:
+      label: （可選）項目 B 的描述 · (Optional) Item B description
+      description: 請先去除敏感內容。 / Remove sensitive content first.
+      render: text

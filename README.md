@@ -31,9 +31,13 @@
 
 這個倉庫只放網站檔案。發佈前，頁面已在無頭瀏覽器中通過以下測試：判定回歸、首屏與 375px 版面、亮暗色、真實鍵盤操作，以及「沒有任何外部請求」。測試腳本不在這個倉庫。
 
-## 回報問題
+## 回報誤報
 
-請開 [Issue](https://github.com/onholdlab/tool-twins/issues)。
+工具把不像的組合判成雙胞胎，或漏掉真的會搶觸發的組合？請用[誤報／漏報表單](https://github.com/onholdlab/tool-twins/issues/new?template=wrong-result.yml)回報：
+- 填哪兩個項目、工具怎麼判斷、你認為哪裡不對。
+- 可以附上兩邊的描述，貼之前請先去除敏感內容。
+
+其他建議請用[建議與其他](https://github.com/onholdlab/tool-twins/issues/new?template=feedback.yml)。
 
 ## 授權
 
@@ -49,5 +53,5 @@
 
 - **Use:** open https://onholdlab.github.io/tool-twins/ (or download `index.html`), then choose your skills folder (`~/.claude/skills`), pick a file, or paste text. Or press "Try the demo".
 - **Private:** everything runs in your browser. The page makes no network requests and nothing is uploaded.
-- **Issues:** https://github.com/onholdlab/tool-twins/issues
+- **Wrong result?** Report a false alarm or a missed twin with the [wrong-result form](https://github.com/onholdlab/tool-twins/issues/new?template=wrong-result.yml) (remove sensitive content from any description you paste). Other ideas: [suggestions](https://github.com/onholdlab/tool-twins/issues/new?template=feedback.yml).
 - **License:** Apache License 2.0 (see [LICENSE](LICENSE)). Third-party demo data is credited in [NOTICE](NOTICE). The names and logos are not covered by the license.

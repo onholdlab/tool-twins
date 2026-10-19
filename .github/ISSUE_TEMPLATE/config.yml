@@ -1,0 +1,6 @@
+blank_issues_enabled: true
+# A "這個工具有幫到你嗎？ · Did this tool help you?" contact link goes here once its target exists, e.g.:
+# contact_links:
+#   - name: 這個工具有幫到你嗎？ · Did this tool help you?
+#     url: <the poll's address>
+#     about: 一鍵回覆，不用寫 issue。 · One click, no issue needed.
