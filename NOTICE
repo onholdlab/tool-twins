@@ -1,0 +1,31 @@
+Tool Twins (工具雙胞胎)
+Copyright 2026 onholdlab
+
+This product is licensed under the Apache License, Version 2.0 (see LICENSE).
+
+The names "onholdlab", "稍等工作室", "Tool Twins" and "工具雙胞胎" and any logos are not
+licensed under the Apache License; see README.md.
+
+Third-party material
+--------------------
+
+The demo data built into index.html is copied verbatim from these public sources:
+
+- skill-creator, webapp-testing
+  from https://github.com/anthropics/skills (commit dbd4588f9e1033efb41dad4bef2f7947c8993d44)
+  License: Apache License 2.0
+
+- writing-skills, executing-plans, subagent-driven-development, requesting-code-review, receiving-code-review
+  from https://github.com/obra/superpowers (commit bb92a77741419a4ab5f06e711a283343f1ada0c3)
+  Copyright (c) 2025 Jesse Vincent
+  License: MIT
+
+- browser_* tool definitions
+  from @playwright/mcp 0.0.83 (https://github.com/microsoft/playwright-mcp)
+  Copyright (c) Microsoft Corporation
+  License: Apache License 2.0
+
+- read_* tool definitions
+  from @modelcontextprotocol/server-filesystem 2026.8.31 (https://github.com/modelcontextprotocol/servers)
+  License: Apache License 2.0 / MIT (the project is moving from MIT to Apache 2.0;
+  contributions not yet relicensed remain under MIT)
