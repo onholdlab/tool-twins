@@ -202,6 +202,8 @@ td.n{font-family:var(--f-mono);font-variant-numeric:tabular-nums}
 .stack span{flex-basis:0;min-width:2px;background:var(--muted);opacity:.4}
 .stack span.big{background:var(--teal);opacity:1}
 .lane-h .sub{margin-left:4px}
+.noscript{border:2px solid var(--warn)}
+.noscript p{margin:0;max-width:65ch}
 .sr{position:absolute;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
 .bars li:not(.big) .bv{opacity:0}
 .bars li:hover .bv,.bars li:focus .bv{opacity:1}
@@ -213,46 +215,53 @@ td.n{font-family:var(--f-mono);font-variant-numeric:tabular-nums}
   <div class="lang" id="lang" role="group" aria-label="Language"><button type="button" data-l="zh">繁中</button><button type="button" data-l="en">EN</button></div></div>
   <section class="hero" aria-labelledby="h1">
     <div class="hero-copy">
-      <h1 id="h1" data-t="h1"></h1>
-      <p class="tagline" data-t="tagline"></p>
-      <div class="cta"><button class="btn p big" id="tryDemo" type="button" data-t="tryDemo"></button></div>
+      <h1 id="h1" data-t="h1">工具雙胞胎</h1>
+      <p class="tagline" data-t="tagline">檢查你的 skills 會不會互相搶觸發</p>
+      <div class="cta"><button class="btn p big" id="tryDemo" type="button" data-t="tryDemo">用示範試試看</button></div>
     </div>
-    <div class="art-col"><div id="art" aria-hidden="true"></div><p class="lint" data-t="lint"></p></div>
+    <div class="art-col"><div id="art" aria-hidden="true"></div><p class="lint" data-t="lint">檢查工具只看單一 skill；工具雙胞胎看它們彼此之間。</p></div>
   </section>
   <div class="drop" id="drop">
-    <p class="drop-h"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M12 10v6M9 13l3 3 3-3"/></svg><span data-t="dropTitle"></span></p>
-    <div class="bar"><button class="btn p" id="pickD" type="button" data-t="pickD"></button>
-      <span class="where"><button type="button" class="link" id="whereBtn" aria-expanded="false" aria-controls="wherePop" data-t="whereQ"></button>
+    <p class="drop-h"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M12 10v6M9 13l3 3 3-3"/></svg><span data-t="dropTitle">把 skills 資料夾拖到這裡</span></p>
+    <div class="bar"><button class="btn p" id="pickD" type="button" data-t="pickD">選擇 skills 資料夾</button>
+      <span class="where"><button type="button" class="link" id="whereBtn" aria-expanded="false" aria-controls="wherePop" data-t="whereQ">skills 放在哪？</button>
         <div class="pop" id="wherePop" role="dialog" aria-labelledby="whereH" hidden>
-          <p class="pop-h" id="whereH" data-t="whereH"></p>
-          <div class="path"><span class="brand">Windows</span><code id="pathWin" data-t="pathWin"></code><button type="button" class="btn s cp" data-path="pathWin" data-t="copyPath"></button></div>
-          <div class="path"><span class="brand">Mac / Linux</span><code id="pathMac">~/.claude/skills</code><button type="button" class="btn s cp" data-path="pathMac" data-t="copyPath"></button></div>
-          <p class="note" data-t="macHint"></p>
-          <button type="button" class="btn s" id="whereClose" data-t="close"></button>
+          <p class="pop-h" id="whereH" data-t="whereH">Claude Code 的個人 skills 資料夾</p>
+          <div class="path"><span class="brand">Windows</span><code id="pathWin" data-t="pathWin">C:\Users\你的名字\.claude\skills</code><button type="button" class="btn s cp" data-path="pathWin" data-t="copyPath">複製路徑</button></div>
+          <div class="path"><span class="brand">Mac / Linux</span><code id="pathMac">~/.claude/skills</code><button type="button" class="btn s cp" data-path="pathMac" data-t="copyPath">複製路徑</button></div>
+          <p class="note" data-t="macHint">Mac 的選擇視窗看不到隱藏資料夾時，按 Cmd+Shift+G，再貼上路徑。</p>
+          <button type="button" class="btn s" id="whereClose" data-t="close">關閉</button>
         </div></span></div>
-    <p class="note" id="pickDNote" data-t="pickDNote"></p>
-    <p class="mobile-note" id="mobileNote" data-t="mobileNote" hidden></p>
-    <p class="one-file"><button type="button" class="link" id="pickF" data-t="pickF"></button></p>
+    <p class="note" id="pickDNote" data-t="pickDNote">一次分析裡面所有 SKILL.md</p>
+    <p class="mobile-note" id="mobileNote" data-t="mobileNote" hidden>手機上請用「用示範試試看」或貼上文字；選資料夾請改用電腦。</p>
+    <p class="one-file"><button type="button" class="link" id="pickF" data-t="pickF">只有單一檔案？選擇 SKILL.md 或 tools/list 的 JSON</button></p>
     <input type="file" id="fileF" multiple accept=".md,.json,text/markdown,application/json" hidden><input type="file" id="fileD" webkitdirectory multiple hidden>
     <ul class="flist" id="flist"></ul>
-    <details class="paste" id="paste"><summary data-t="pasteH"></summary>
-      <label class="brand" for="inp" data-t="label"></label>
+    <details class="paste" id="paste"><summary data-t="pasteH">或貼上文字（tools/list JSON 或 SKILL.md）</summary>
+      <label class="brand" for="inp" data-t="label">工具定義 JSON 或 SKILL.md（下面是示範資料）</label>
       <textarea id="inp" spellcheck="false"></textarea>
     </details>
-    <p class="note" id="mix" data-t="mixNote" hidden></p>
-    <div class="bar"><button class="btn p" id="run" type="button" data-t="run"></button><button class="btn" id="demo" type="button" data-t="demo"></button><span class="stat" id="stat" role="status" aria-live="polite"></span><span class="msg" id="msg" role="alert"></span></div>
+    <p class="note" id="mix" data-t="mixNote" hidden>文字框裡的內容會與檔案一起分析。</p>
+    <div class="bar"><button class="btn p" id="run" type="button" data-t="run">分析</button><button class="btn" id="demo" type="button" data-t="demo">載入示範</button><span class="stat" id="stat" role="status" aria-live="polite"></span><span class="msg" id="msg" role="alert"></span></div>
   </div>
-  <p class="trust"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg><span data-t="trust"></span></p>
+  <p class="trust"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg><span data-t="trust">全部在你的瀏覽器計算，不會上傳</span></p>
+  <noscript><section class="card noscript">
+    <h2>這個工具需要 JavaScript · JavaScript required</h2>
+    <p>工具雙胞胎檢查你的 Claude skills 與 MCP 工具會不會互相搶觸發：找出名稱或描述太像、模型可能選錯的組合，給一句可以補進描述的排除說明，並估算每個項目佔用的 token。</p>
+    <p>怎麼用：開啟 JavaScript 後重新整理，按「選擇 skills 資料夾」（例如 ~/.claude/skills），或貼上 SKILL.md、tools/list 的 JSON，再按「分析」。也可以先按「用示範試試看」。</p>
+    <p>隱私：所有計算都在你的瀏覽器裡完成，頁面不送出任何網路請求，你的檔案不會上傳。</p>
+    <p lang="en">Tool Twins checks whether your Claude skills and MCP tools compete for the same requests, suggests an exclusion line for each confusable pair, and estimates the tokens each item costs. Turn on JavaScript and reload, then choose your skills folder (e.g. ~/.claude/skills) or paste SKILL.md files and press Analyze. Everything runs in your browser; nothing is uploaded.</p>
+  </section></noscript>
   <div id="out" style="display:grid;gap:16px;scroll-margin-top:12px"></div>
-  <details class="foot card" id="foot"><summary data-t="footH"></summary>
-    <p class="sub" data-t="lede"></p>
-    <p class="note" data-t="lint"></p>
-    <p class="note" data-t="note"></p>
-    <p class="note" data-t="tokNote"></p>
-    <p class="note" data-t="where"></p>
-    <p class="note" data-t="demoSrc"></p>
+  <details class="foot card" id="foot"><summary data-t="footH">方法與來源 · 示範資料授權（Apache-2.0、MIT）</summary>
+    <p class="sub" data-t="lede">貼上 MCP 伺服器的 tools/list 結果、SKILL.md，或把整個 skills 資料夾拖進來。這個工具找出名字和描述太像、模型可能選錯的「雙胞胎」，並估算每個項目佔多少 token。全部在瀏覽器內計算，不會上傳。</p>
+    <p class="note" data-t="lint">檢查工具只看單一 skill；工具雙胞胎看它們彼此之間。</p>
+    <p class="note" data-t="note">相似度用 TF-IDF 加餘弦距離，比較名稱、描述與參數名稱；英文會合併詞形（file／files）與常見同義動詞（get／fetch、delete／remove），中文用兩字詞片段。名稱開頭是已知動詞時，動作不同、或動作相同但物件互不相干的兩個工具，分數減半。這是啟發式檢查，可能誤報，也可能漏報；分數和標籤只是提示，不是定論，也不是模型實際的選擇機率。token 數是以字元數換算的估計值。</p>
+    <p class="note" data-t="tokNote">token 是估算值：英文約 4 個字元算 1 個，中日韓文約 1.25 個字元算 1 個。各模型的 tokenizer 不同，實際數字會有出入。MCP 工具計算名稱、描述與 inputSchema；skill 只計算啟動時載入的名稱與描述。</p>
+    <p class="note" data-t="where">skills 放在哪：Claude Code 的個人 skills 在 ~/.claude/skills，專案層級的在 .claude/skills。其他工具據說使用 .agents/skills/ 與 .github/skills/（未經驗證）。選資料夾時只讀取裡面的 SKILL.md。</p>
+    <p class="note" data-t="demoSrc">示範資料逐字取自公開 repo：skill-creator、webapp-testing 來自 github.com/anthropics/skills（Apache-2.0）；writing-skills、executing-plans、subagent-driven-development、requesting-code-review、receiving-code-review 來自 github.com/obra/superpowers（MIT，© 2025 Jesse Vincent）；browser_* 工具來自 @playwright/mcp 0.0.83（Apache-2.0，© Microsoft）；read_* 工具來自 @modelcontextprotocol/server-filesystem 2026.8.31（Apache-2.0／MIT）。</p>
   </details>
-  <p class="note" data-t="heur"></p>
+  <p class="note" data-t="heur">這是啟發式檢查，可能誤報，也可能漏報；分數和標籤只是提示，不是定論。</p>
   <p class="note"><a class="home" id="repoLink" href="#" target="_blank" rel="noopener"></a></p>
 </div>
 <div id="tip" role="tooltip"></div>
