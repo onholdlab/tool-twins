@@ -250,7 +250,9 @@ td.n{font-family:var(--f-mono);font-variant-numeric:tabular-nums}
     <p>工具雙胞胎檢查你的 Claude skills 與 MCP 工具會不會互相搶觸發：找出名稱或描述太像、模型可能選錯的組合，給一句可以補進描述的排除說明，並估算每個項目佔用的 token。</p>
     <p>怎麼用：開啟 JavaScript 後重新整理，按「選擇 skills 資料夾」（例如 ~/.claude/skills），或貼上 SKILL.md、tools/list 的 JSON，再按「分析」。也可以先按「用示範試試看」。</p>
     <p>隱私：所有計算都在你的瀏覽器裡完成，頁面不送出任何網路請求，你的檔案不會上傳。</p>
+    <p class="poll">這個工具有幫到你嗎？<a href="https://github.com/onholdlab/tool-twins/discussions/2" target="_blank" rel="noopener">一鍵投票 →</a></p>
     <p lang="en">Tool Twins checks whether your Claude skills and MCP tools compete for the same requests, suggests an exclusion line for each confusable pair, and estimates the tokens each item costs. Turn on JavaScript and reload, then choose your skills folder (e.g. ~/.claude/skills) or paste SKILL.md files and press Analyze. Everything runs in your browser; nothing is uploaded.</p>
+    <p class="poll" lang="en">Did this tool help you? <a href="https://github.com/onholdlab/tool-twins/discussions/2" target="_blank" rel="noopener">Vote in one click →</a></p>
   </section></noscript>
   <div id="out" style="display:grid;gap:16px;scroll-margin-top:12px"></div>
   <details class="foot card" id="foot"><summary data-t="footH">方法與來源 · 示範資料授權（Apache-2.0、MIT）</summary>
@@ -263,6 +265,7 @@ td.n{font-family:var(--f-mono);font-variant-numeric:tabular-nums}
   </details>
   <p class="note" data-t="heur">這是啟發式檢查，可能誤報，也可能漏報；分數和標籤只是提示，不是定論。</p>
   <p class="note"><a class="home" id="repoLink" href="#" target="_blank" rel="noopener"></a></p>
+  <p class="note"><a class="home" id="pollLink" data-t="pollFoot" href="https://github.com/onholdlab/tool-twins/discussions/2" target="_blank" rel="noopener">這個工具有幫到你嗎？一鍵投票 →</a></p>
 </div>
 <div id="tip" role="tooltip"></div>
 
@@ -297,7 +300,7 @@ zh:{h1:'工具雙胞胎',lede:'貼上 MCP 伺服器的 tools/list 結果、SKILL
  vBetter:function(one,weak,trig){var more=[one?one+' 組只有一邊說明':'',weak?weak+' 個項目說明不足':''].filter(Boolean).join('、');return (trig?S.zh.noFix+S.zh.weakNote(trig):'沒有會互相搶觸發的組合，這點做得很好。')+(more?'還可以更好：'+more+'。':'')},
  noFix:'沒有需要先處理的組合。',weakNote:function(n){return '另有 '+n+' 組只共用少數詞的弱訊號，可選擇查看，其中可能仍有容易混淆的組合。'},tWeak:'弱訊號（只共用少數詞，未列入需要先處理）',
  vRisky:function(n,ok,both,k){return '在 '+n+' 項中，'+ok+' 項沒有和別人搶觸發'+(both?'，'+both+' 組已互相說明':'')+'。有 '+k+' 組容易互相搶觸發，建議先處理。'},
- trust:'全部在你的瀏覽器計算，不會上傳',mobileNote:'手機上請用「用示範試試看」或貼上文字；選資料夾請改用電腦。',repoLink:'原始碼與回報問題',vH:'結論',stackLabel:function(top){return '每個項目佔的 token 比例；最大的三個：'+top},nItems:'項目',nTok:'每次對話先佔用 token（估）',nFix:'需要處理的組數',
+ trust:'全部在你的瀏覽器計算，不會上傳',mobileNote:'手機上請用「用示範試試看」或貼上文字；選資料夾請改用電腦。',repoLink:'原始碼與回報問題',pollFoot:'這個工具有幫到你嗎？一鍵投票 →',poll:'這次結果有幫到你嗎？一鍵投票 →',vH:'結論',stackLabel:function(top){return '每個項目佔的 token 比例；最大的三個：'+top},nItems:'項目',nTok:'每次對話先佔用 token（估）',nFix:'需要處理的組數',
  laneFix:'需要先處理',laneBetter:'可以更好',laneDone:'已經做對',laneBetterNone:'沒有需要補強的地方。',
  laneDoneNone:'還沒有互相說明的組合。兩邊各加一句排除說明後，會出現在這裡。',doneBoth:function(n){return n+' 組已互相說明'},weakH:'說明不足的項目',
  tokH:'每次對話先佔用的 token',tokSub:'由大到小排列，最大的三個以顏色標出；滑過或聚焦可看數值。',tokMore:function(n){return '其餘 '+n+' 項'},bodyNote:'skill 本文只在使用時才載入，不計入。',
@@ -343,7 +346,7 @@ en:{h1:'Tool Twins',lede:'Paste an MCP server\'s tools/list result or SKILL.md f
  vBetter:function(one,weak,trig){var more=[one?one+' pair'+(one===1?'':'s')+' explained on one side only':'',weak?weak+' item'+(weak===1?'':'s')+' under-documented':''].filter(Boolean).join(', ');return (trig?S.en.noFix+' '+S.en.weakNote(trig):'Nothing competes for the same requests, which is good.')+(more?' Could be better: '+more+'.':'')},
  noFix:'No pairs to fix first.',weakNote:function(n){return n===1?'1 more pair shares only a few words (a weak signal); you can review it, and it may still be easy to confuse.':n+' more pairs share only a few words (weak signals); you can review them, and some may still be easy to confuse.'},tWeak:'Weak signals (only a few shared words, not under Fix first)',
  vRisky:function(n,ok,both,k){return ok+' of '+n+' items compete with nothing'+(both?' and '+both+' pair'+(both===1?' explains':'s explain')+' each other':'')+'. '+k+' pair'+(k===1?' competes':'s compete')+' for the same requests; fix '+(k===1?'it':'those')+' first.'},
- trust:'Everything runs in your browser; nothing is uploaded',mobileNote:'On a phone, use Try the demo or paste text; to choose a folder, use a computer.',repoLink:'Source code and issues',vH:'Summary',stackLabel:function(top){return 'Each item\'s share of the tokens; the three largest: '+top},nItems:'items',nTok:'tokens loaded per conversation (est.)',nFix:'pairs to fix',
+ trust:'Everything runs in your browser; nothing is uploaded',mobileNote:'On a phone, use Try the demo or paste text; to choose a folder, use a computer.',repoLink:'Source code and issues',pollFoot:'Did this tool help you? Vote in one click →',poll:'Did this help? Vote in one click →',vH:'Summary',stackLabel:function(top){return 'Each item\'s share of the tokens; the three largest: '+top},nItems:'items',nTok:'tokens loaded per conversation (est.)',nFix:'pairs to fix',
  laneFix:'Fix first',laneBetter:'Could be better',laneDone:'Done right',laneBetterNone:'Nothing to strengthen.',
  laneDoneNone:'No pairs explain each other yet. Once both sides add an exclusion, they show up here.',doneBoth:function(n){return n+' pair'+(n===1?' explains':'s explain')+' each other'},weakH:'Under-documented items',
  tokH:'Tokens loaded in every conversation',tokSub:'Largest first; the three largest are highlighted. Hover or focus a bar for its value.',tokMore:function(n){return n+' more items'},bodyNote:'Skill bodies load only when used and are not counted.',
@@ -944,6 +947,8 @@ function show(tools,copies){
   h+='</tbody></table></div>';
   if(Object.keys(styles).length>1)h+='<p class="sub iss">'+esc(S[L].styles(Object.keys(styles).join(t('sep'))))+'</p>';
   h+='</div></details>';
+  // a plain link to the feedback poll, only under results; the address lives once, in the footer link
+  h+='<p class="note poll"><a class="home" href="'+esc($('#pollLink').href)+'" target="_blank" rel="noopener">'+t('poll')+'</a></p>';
   $('#out').innerHTML=h;
   document.querySelectorAll('#out .copy').forEach(function(b){b.onclick=function(){
     copyText(b.getAttribute('data-copy')).then(function(){b.textContent=t('copied')},function(){b.textContent=t('copyFail')});
