@@ -387,18 +387,19 @@ var DEMO=[
  {"name":"read_file","description":"Read the complete contents of a file as text. DEPRECATED: Use read_text_file instead.","inputSchema":{"$schema":"http://json-schema.org/draft-07/schema#","type":"object","properties":{"path":{"type":"string"},"tail":{"description":"If provided, returns only the last N lines of the file","type":"number"},"head":{"description":"If provided, returns only the first N lines of the file","type":"number"}},"required":["path"]}},
  {"name":"read_multiple_files","description":"Read the contents of multiple files simultaneously. This is more efficient than reading files one by one when you need to analyze or compare multiple files. Each file's content is returned with its path as a reference. Failed reads for individual files won't stop the entire operation. Only works within allowed directories.","inputSchema":{"$schema":"http://json-schema.org/draft-07/schema#","type":"object","properties":{"paths":{"minItems":1,"type":"array","items":{"type":"string"},"description":"Array of file paths to read. Each path must be a string pointing to a valid file within allowed directories."}},"required":["paths"]}}
 ];
-var STOP={the:1,a:1,an:1,of:1,to:1,and:1,or:1,in:1,on:1,at:1,for:1,with:1,by:1,is:1,are:1,it:1,its:1,that:1,this:1,given:1,type:1,string:1,object:1,number:1,boolean:1,array:1,"的":1};
+// tables keyed by words, names or phrases from the input have no prototype: "constructor" or "__proto__" is an ordinary key
+var STOP=Object.assign(Object.create(null),{the:1,a:1,an:1,of:1,to:1,and:1,or:1,in:1,on:1,at:1,for:1,with:1,by:1,is:1,are:1,it:1,its:1,that:1,this:1,given:1,type:1,string:1,object:1,number:1,boolean:1,array:1,"的":1});
 // light stemmer: file/files, read/reading, create/created all land on one form; keeps -ss words (process) intact
 function stem(w){return w.replace(/ies$/,'y').replace(/(?<=.{3})(?:ing|ed)$|(?<=.{3}[^s])s$/,'').replace(/(?<=.{2})e$/,'')}
 // shortcut: hand-picked English verb groups, extend when real tool sets show other synonym misses
 // every word in a group becomes one "~group" token at SYNW weight, so sharing only a verb (exact or synonym) stays a weak signal
-var SYN={},SHOW={},SYNW=0.5;
+var SYN=Object.create(null),SHOW=Object.create(null),SYNW=0.5;
 [['get','fetch','retrieve','obtain','read','load'],['delete','remove','erase','destroy','drop'],['create','add','insert'],['update','modify','edit','change','patch'],
  ['search','find','query','lookup'],['run','exec','execute','invoke','call','launch'],['directory','folder','dir']].forEach(function(g){SHOW['~'+stem(g[0])]='≈'+g[0];g.forEach(function(w){SYN[stem(w)]=stem(g[0])})});
 // verb compatibility: a name that starts with a known verb has an action and an object (list_issues = list + issue).
 // Different actions, or the same action on objects neither description mentions, multiply the score by COMPAT.
 // shortcut: English verb list only; a name without a known leading verb is never adjusted
-var VERBS={},COMPAT=0.5;
+var VERBS=Object.create(null),COMPAT=0.5;
 ('list write push pull move copy send upload download merge fork close open navigate click type select toggle trigger save export import install start stop check validate verify '+
  'reply post comment review commit sort filter count scroll press hover drag resize wait evaluate take set print echo sign log subscribe unsubscribe publish schedule cancel '+
  'approve reject assign invite share rename archive restore sync fill submit translate summarize generate convert render parse analyze compare calculate describe show display view browse watch notify track')
@@ -406,13 +407,13 @@ var VERBS={},COMPAT=0.5;
 // different verbs on the same object that are near-twins (list/search issues, create/push files): SAMECLASS instead of COMPAT.
 // create vs update are opposite lifecycle steps, so edit-edit stays COMPAT; only edit vs store (push/write/upload/set/save) counts
 // get stays out of the query class: it takes an id, list/search take conditions
-var VCLASS={},SAMECLASS=0.8,NEAR={'query query':1,'edit store':1,'store edit':1};
+var VCLASS=Object.create(null),SAMECLASS=0.8,NEAR={'query query':1,'edit store':1,'store edit':1};
 'list search'.split(' ').forEach(function(w){VCLASS[SYN[stem(w)]||stem(w)]='query'});
 'create update'.split(' ').forEach(function(w){VCLASS[SYN[stem(w)]||stem(w)]='edit'});
 'write push upload set save'.split(' ').forEach(function(w){VCLASS[SYN[stem(w)]||stem(w)]='store'});
 // get_pull_request vs get_pull_request_files / _comments: same name up to a trailing sub-resource word means a different resource
 // shortcut: fixed sub-resource word list, extend when real tool sets show others
-var SUBRES={};
+var SUBRES=Object.create(null);
 'files comments reviews status commits branches labels members tags releases assets attachments events jobs artifacts settings permissions collaborators checks logs replies reactions fields'
  .split(' ').forEach(function(w){SUBRES[stem(w)]=1});
 function subres(a,b){
@@ -422,9 +423,9 @@ function subres(a,b){
   return l.length===n+1&&s.join(' ')===l.slice(0,n).join(' ')&&SUBRES[l[n]];
 }
 // a non-verb first word shared by >= 3 tools (browser_drag, browser_hover...) is a namespace: the verb rules read the next word
-var NS={};
+var NS=Object.create(null);
 function setNS(tools){
-  var c={};NS={};
+  var c=Object.create(null);NS=Object.create(null);
   tools.forEach(function(x){if(x.source==='skill')return;var w=splitName(x.name).toLowerCase().match(/[a-z0-9]{2,}/g)||[];if(w.length>1)c[w[0]]=(c[w[0]]||0)+1});
   Object.keys(c).forEach(function(w){var s=stem(w);if(c[w]>=3&&!SYN[s]&&!VERBS[s])NS[w]=1});
 }
@@ -461,14 +462,14 @@ function docOf(tool){
   var parts=[];
   // a skill is matched on its description text alone: none of the MCP name rules (verbs, sub-resources, namespaces, synonym verbs) apply
   if(tool.source==='skill'){
-    var sset={};parts=tok(tool.description,true);parts.forEach(function(w){sset[w]=1});
+    var sset=Object.create(null);parts=tok(tool.description,true);parts.forEach(function(w){sset[w]=1});
     return {toks:parts,props:{},names:[],verb:null,obj:[],words:[],set:sset};
   }
   var nameToks=tok(splitName(tool.name));
   nameToks.forEach(function(w){parts.push(w,w)}); // name weighs double
   tok(tool.description).forEach(function(w){parts.push(w)});
   names.forEach(function(k){tok(splitName(k)).forEach(function(w){parts.push(w)});tok(props[k]&&props[k].description).forEach(function(w){parts.push(w)})});
-  var np=nameParts(tool.name),set={};parts.forEach(function(w){set[w]=1});
+  var np=nameParts(tool.name),set=Object.create(null);parts.forEach(function(w){set[w]=1});
   return {toks:parts,props:props,names:names,verb:np.verb,obj:np.obj,words:np.words,set:set};
 }
 // does x's description name tool y? (read_file: 'DEPRECATED: Use read_text_file instead')
@@ -484,12 +485,12 @@ function mentions(x,y){
 // shortcut: clause ends at the next . ; ! ? or newline, so "e.g." cuts a clause short; good enough for trigger lists
 var TRIG_EN=/\b(?:use (?:this skill |this |it )?(?:when|whenever|for|if|any time)|triggers?(?: on| when| include| for)?|when(?:ever)? (?:the |a |your )?(?:user|human)|any time)\b/gi,
     TRIG_ZH=/(?:適用於|適用|當使用者|使用時機|觸發|使用者要求|使用者提到)/g,
-    TRIG_GENERIC={};
+    TRIG_GENERIC=Object.create(null);
 'use user users human partner ask asks asked want wants wanted need needs when whenever skill this any time request requests mention mentions trigger triggers like something anything work working'
  .split(' ').forEach(function(w){TRIG_GENERIC[stem(w)]=1});
 // function words carry no trigger or topic: kept out of trigger words and suggestion words (the similarity score does not use this list)
 // The standard English stopword list (NLTK's 179 words) plus the modal auxiliaries it lacks and a few abbreviations.
-var FUNC_WORDS={};
+var FUNC_WORDS=Object.create(null);
 ('i me my myself we our ours ourselves you your yours yourself yourselves he him his himself she her hers herself it its itself they them their theirs themselves '+
  'what which who whom this that these those am is are was were be been being have has had having do does did doing a an the and but if or because as until while '+
  'of at by for with about against between into through during before after above below to from up down in out on off over under again further then once here there '+
@@ -498,12 +499,12 @@ var FUNC_WORDS={};
  'could would may might must shall also either neither another many much less onto whose done via per etc e.g ie')
  .split(' ').forEach(function(w){FUNC_WORDS[stem(w)]=1});
 function quoted(d){
-  var out={},m,re=/["“「『]([^"”」』\n]{2,60})["”」』]|(?:^|[\s(:,])'([^'\n]{2,60})'(?=[\s.,;:)!?]|$)/g;
+  var out=Object.create(null),m,re=/["“「『]([^"”」』\n]{2,60})["”」』]|(?:^|[\s(:,])'([^'\n]{2,60})'(?=[\s.,;:)!?]|$)/g;
   while((m=re.exec(d)))out[(m[1]||m[2]).trim().toLowerCase()]=1;
   return out;
 }
 function triggers(desc){
-  var d=String(desc||'').replace(/\s+/g,' '),words={},m,clauses=[];
+  var d=String(desc||'').replace(/\s+/g,' '),words=Object.create(null),m,clauses=[];
   // "Do NOT trigger when …" lists what the item is not for: its exclusion sentences are never trigger clauses
   exclusions(d).forEach(function(s){d=d.split(s).join(' . ')});
   [TRIG_EN,TRIG_ZH].forEach(function(re){re.lastIndex=0;while((m=re.exec(d)))clauses.push(d.slice(m.index+m[0].length).split(SENT_END)[0])});
@@ -530,16 +531,16 @@ function namedIn(s,name){
 // ("Claude in Chrome" -> chrome-browser, while "browser" is shared with built-in-browser and proves nothing).
 // Full names of other items in the set are blanked out first, so "use doc-editor instead" never points at doc-review through "doc".
 // shortcut: a hand-off to a skill outside the set that shares such a word still counts, hiding that pair from the top list
-var NAME_GENERIC={};'skill skills tool tools mcp server helper agent assistant the and for with'.split(' ').forEach(function(w){NAME_GENERIC[w]=1});
+var NAME_GENERIC=Object.create(null);'skill skills tool tools mcp server helper agent assistant the and for with'.split(' ').forEach(function(w){NAME_GENERIC[w]=1});
 // Anchors: what an item is called besides its name, each enough on its own. Title-case product names from the part of its
 // description that says what it does (Word, Chrome, Google; not sentence-initial words, not its own exclusion sentences),
 // plus file formats it handles and their product names (docx <-> Word, xlsx <-> Excel / spreadsheet, pptx <-> PowerPoint).
 // shortcut: hand-written format table and generic-word list; extend when real skills show other products
-var FORMAT_ALIAS={docx:['word'],dotx:['word'],xls:['excel','spreadsheet'],xlsx:['excel','spreadsheet'],xlsm:['excel','spreadsheet'],ppt:['powerpoint'],pptx:['powerpoint'],potx:['powerpoint'],pdf:[]};
-var ANCHOR_GENERIC={};'claude anthropic api apis mcp ai sdk json html css markdown python javascript typescript node use using if do not when whenever the this that these also trigger skill skills tool tools writing code file files document documents data user users'
+var FORMAT_ALIAS=Object.assign(Object.create(null),{docx:['word'],dotx:['word'],xls:['excel','spreadsheet'],xlsx:['excel','spreadsheet'],xlsm:['excel','spreadsheet'],ppt:['powerpoint'],pptx:['powerpoint'],potx:['powerpoint'],pdf:[]});
+var ANCHOR_GENERIC=Object.create(null);'claude anthropic api apis mcp ai sdk json html css markdown python javascript typescript node use using if do not when whenever the this that these also trigger skill skills tool tools writing code file files document documents data user users'
  .split(' ').forEach(function(w){ANCHOR_GENERIC[w]=1});
 function anchors(x,ex){
-  var text=String(x.description||'').replace(/\s+/g,' '),out={},m;
+  var text=String(x.description||'').replace(/\s+/g,' '),out=Object.create(null),m;
   (ex||[]).forEach(function(s){text=text.split(s).join(' . ')}); // what it says it is not for is not what it is
   var re=/([A-Z][a-z]{2,}(?:[A-Z][a-z]+)*)\b/g;
   while((m=re.exec(text))){if(!/(^|[.!?:;]\s*)$/.test(text.slice(0,m.index)))out[m[1].toLowerCase()]=1}
@@ -556,7 +557,7 @@ function pointsTo(s,other,self,names,ao,as){
     if(n!==other.name&&n!==self.name&&v)low=low.split(new RegExp('(?<![\\w])'+v.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+'(?![\\w])','g')).join(' ');
   });
   // every distinctive word must be there: one word alone ("writing" in "is writing code") matched writing-plans and writing-skills
-  var own={};String(self.name).toLowerCase().split(/[^a-z0-9㐀-鿿]+/).forEach(function(w){own[w]=1});
+  var own=Object.create(null);String(self.name).toLowerCase().split(/[^a-z0-9㐀-鿿]+/).forEach(function(w){own[w]=1});
   var ws=String(other.name).toLowerCase().split(/[^a-z0-9㐀-鿿]+/).filter(function(w){return w.length>=3&&!own[w]&&!NAME_GENERIC[w]});
   if(ws.length>0&&ws.every(function(w){return namedIn(low,w)}))return {by:'words',word:ws.join(' ')};
   // any anchor of other that self does not share ("Do NOT use for … Word …" -> docx)
@@ -587,17 +588,17 @@ function exclState(a,b,ea,eb,names,aa,ab,ha,hb){
   return x&&y?'both':x?'ab':y?'ba':'none';
 }
 function analyze(tools){
-  setNS(tools);var docs=tools.map(docOf),N=docs.length,df={};
+  setNS(tools);var docs=tools.map(docOf),N=docs.length,df=Object.create(null);
   var trig=tools.map(function(x){return triggers(x.description)}),exc=tools.map(function(x){return exclusions(x.description)}),names=tools.map(function(x){return x.name});
   var anc=tools.map(function(x,k){return anchors(x,exc[k])}),hand=tools.map(function(x){return handoffs(x.description)});
   // a word in more than a third of the loaded descriptions does not tell two items apart, so it is no shared trigger;
   // the floor of 2 keeps small sets meaningful (with 2-6 items, a word both share would otherwise always be "common")
-  var ddf={},COMMON=Math.max(2,N/3);
-  tools.forEach(function(x){var seen={};tok(x.description,true).forEach(function(w){if(!seen[w]){seen[w]=1;ddf[w]=(ddf[w]||0)+1}})});
-  docs.forEach(function(d){var seen={};d.toks.forEach(function(w){if(!seen[w]){seen[w]=1;df[w]=(df[w]||0)+1}})});
+  var ddf=Object.create(null),COMMON=Math.max(2,N/3);
+  tools.forEach(function(x){var seen=Object.create(null);tok(x.description,true).forEach(function(w){if(!seen[w]){seen[w]=1;ddf[w]=(ddf[w]||0)+1}})});
+  docs.forEach(function(d){var seen=Object.create(null);d.toks.forEach(function(w){if(!seen[w]){seen[w]=1;df[w]=(df[w]||0)+1}})});
   var vecs=docs.map(function(d){
-    var tf={};d.toks.forEach(function(w){tf[w]=(tf[w]||0)+(w[0]==='~'?SYNW:1)});
-    var v={},norm=0;
+    var tf=Object.create(null);d.toks.forEach(function(w){tf[w]=(tf[w]||0)+(w[0]==='~'?SYNW:1)});
+    var v=Object.create(null),norm=0;
     Object.keys(tf).forEach(function(w){var x=(tf[w]>=1?1+Math.log(tf[w]):tf[w])*(Math.log((N+1)/(df[w]+1))+1);v[w]=x;norm+=x*x});
     norm=Math.sqrt(norm)||1;Object.keys(v).forEach(function(w){v[w]/=norm});
     return v;
@@ -722,7 +723,7 @@ function copyText(s){
 }
 // Shared words as shown to people: function words and request filler (which, any, even, whenever, asks, person…) are left out.
 // Display only: the scores, triggers and every judgement still use the full list in p.shared.
-var SHOW_SKIP={};'person people someone something anyone anything thing things way even ever'.split(' ').forEach(function(w){SHOW_SKIP[stem(w)]=1});
+var SHOW_SKIP=Object.create(null);'person people someone something anyone anything thing things way even ever'.split(' ').forEach(function(w){SHOW_SKIP[stem(w)]=1});
 function shownWords(ws){return ws.filter(function(w){var s=stem(String(w).toLowerCase());return w[0]==='≈'||!(FUNC_WORDS[s]||TRIG_GENERIC[s]||SHOW_SKIP[s])})}
 function saveText(A){return A.lo===A.hi?A.lo.toLocaleString():A.lo.toLocaleString()+'–'+A.hi.toLocaleString()}
 // plain-language reason for a high-risk pair
@@ -816,7 +817,7 @@ function show(tools,copies){
 
   var A=audit(R,tools),both={};
   R.pairs.forEach(function(p){if(p.tag==='sub')fam[p.i+'-'+p.j]=1;if(p.excl==='both')both[p.i+'-'+p.j]=1});
-  var cnt={};tools.forEach(function(x){cnt[x.name]=(cnt[x.name]||0)+1});
+  var cnt=Object.create(null);tools.forEach(function(x){cnt[x.name]=(cnt[x.name]||0)+1});
   var dups=Object.keys(cnt).filter(function(k){return cnt[k]>1});
   var tot=tools.reduce(function(s,x){return s+tokenEst(x)},0);
   // same-family and both-sides-explained pairs have their own collapsed blocks, so the twin counts and list leave them out
