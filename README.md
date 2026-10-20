@@ -48,7 +48,8 @@ skill 只比較描述。兩個 skill 列為「需要先處理」的條件：描�
 ## 授權
 
 - 程式碼採 [Apache License 2.0](LICENSE)，Copyright 2026 onholdlab。
-- 內建示範資料的第三方來源與授權列在 [NOTICE](NOTICE)。
+- README 與頁面說明性文字（頁面文字位於 index.html 內，該檔作為程式碼仍採 Apache License 2.0）另採 [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/)，署名「onholdlab」，© 2026 onholdlab。
+- 內建示範資料的第三方來源與授權列在 [NOTICE](NOTICE)，維持各自原授權。
 - 「onholdlab」「稍等工作室」「Tool Twins」「工具雙胞胎」等名稱與標誌不在授權範圍內。Apache 2.0 第 6 條本來就不授予商標權。
 
 ---
@@ -62,4 +63,4 @@ skill 只比較描述。兩個 skill 列為「需要先處理」的條件：描�
 - **How pairs are flagged:** skills are compared on their descriptions. A pair is listed under "Fix first" at similarity ≥ 0.50, or with shared trigger words (two words or one quoted phrase) at similarity ≥ 0.30, when neither side points at the other with an exclusion or a routing clause ("For …, use other-skill"). Trigger-only pairs under 0.30 sit in a collapsed "weak signal" block and are not counted.
 - **Wrong result?** Report a false alarm or a missed twin with the [wrong-result form](https://github.com/onholdlab/tool-twins/issues/new?template=wrong-result.yml) (remove sensitive content from any description you paste). Other ideas: [suggestions](https://github.com/onholdlab/tool-twins/issues/new?template=feedback.yml).
 - **Did this tool help you?** Answer with one click in [this poll](https://github.com/onholdlab/tool-twins/discussions/2); no issue needed.
-- **License:** Apache License 2.0 (see [LICENSE](LICENSE)). Third-party demo data is credited in [NOTICE](NOTICE). The names and logos are not covered by the license.
+- **License:** Apache License 2.0 (see [LICENSE](LICENSE)) for the code. The README and the page's explanatory text (which lives in index.html, a code file that stays under Apache License 2.0) are also available under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/), attribution "onholdlab", © 2026 onholdlab. Third-party demo data is credited in [NOTICE](NOTICE) and keeps its own licenses. The names and logos are not covered by these licenses.
