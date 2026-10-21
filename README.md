@@ -1,5 +1,6 @@
 # Tool Twins
 **Use Online：https://onholdlab.github.io/tool-twins/**
+
 checks whether your Claude skills and MCP tools compete for the same requests. It flags pairs whose names or descriptions are close enough for a model to pick the wrong one. For each pair it suggests a "not for … use … instead" line, and it estimates the tokens each item costs in every conversation. It is a heuristic and can raise false alarms or miss real twins.
 
 - **Use:** open https://onholdlab.github.io/tool-twins/ (or download `index.html`), then choose your skills folder (`~/.claude/skills`), pick a file, or paste text. Or press "Try the demo".
