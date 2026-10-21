@@ -1,4 +1,6 @@
-**Tool Twins** checks whether your Claude skills and MCP tools compete for the same requests. It flags pairs whose names or descriptions are close enough for a model to pick the wrong one. For each pair it suggests a "not for … use … instead" line, and it estimates the tokens each item costs in every conversation. It is a heuristic and can raise false alarms or miss real twins.
+# Tool Twins
+**Use Online：https://onholdlab.github.io/tool-twins/**
+checks whether your Claude skills and MCP tools compete for the same requests. It flags pairs whose names or descriptions are close enough for a model to pick the wrong one. For each pair it suggests a "not for … use … instead" line, and it estimates the tokens each item costs in every conversation. It is a heuristic and can raise false alarms or miss real twins.
 
 - **Use:** open https://onholdlab.github.io/tool-twins/ (or download `index.html`), then choose your skills folder (`~/.claude/skills`), pick a file, or paste text. Or press "Try the demo".
 - **Private:** everything runs in your browser. The page makes no network requests and nothing is uploaded.
@@ -7,7 +9,7 @@
 - **Did this tool help you?** Answer with one click in [this poll](https://github.com/onholdlab/tool-twins/discussions/2); no issue needed.
 - **License:** Apache License 2.0 (see [LICENSE](LICENSE)) for the code. The README and the page's explanatory text (which lives in index.html, a code file that stays under Apache License 2.0) are also available under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/), attribution "onholdlab", © 2026 onholdlab. Third-party demo data is credited in [NOTICE](NOTICE) and keeps its own licenses. The names and logos are not covered by these licenses.
 
-# 工具雙胞胎 Tool Twins
+# 工具雙胞胎
 
 檢查你的 skills 會不會互相搶觸發。
 
