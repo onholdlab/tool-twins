@@ -179,6 +179,15 @@ code.tpl{font-family:var(--f-mono);font-size:13px;background:var(--tint);border-
 .cl{font:600 10px var(--f-mono);text-align:center;color:var(--muted);align-self:end}
 .scale{display:flex;align-items:center;gap:8px;font:11px var(--f-mono);color:var(--muted)}
 .scale i{display:block;width:160px;height:8px;border-radius:99px;background:linear-gradient(90deg,var(--cell0),var(--teal))}
+.hm-head{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap}
+.hm-full{position:fixed;inset:0;z-index:15;background:var(--page);display:flex;flex-direction:column}
+.hm-full .hm-bar{display:flex;align-items:center;gap:12px;padding:10px 16px;border-bottom:1px solid var(--rule)}
+.hm-full .hm-bar h2{margin-right:auto}
+.hm-full .hm-body{flex:1;overflow:auto;padding:12px 16px}
+.hm-full .hm{overflow:visible}
+.hm-full .grid{grid-template-columns:170px repeat(var(--n),var(--cs,26px))!important}
+.hm-full .cell{height:var(--cs,26px);min-width:var(--cs,26px)}
+.hm-full .rl{max-width:170px}
 #tip{position:fixed;z-index:20;pointer-events:none;background:var(--ink);color:var(--bg);border-radius:8px;padding:6px 10px;font-size:12px;max-width:260px;display:none}
 table{border-collapse:collapse;width:100%;font-size:13px}
 th,td{text-align:left;padding:6px 8px;border-bottom:1px solid var(--rule);vertical-align:top}
@@ -314,7 +323,7 @@ zh:{h1:'工具雙胞胎',lede:'貼上 MCP 伺服器的 tools/list 結果、SKILL
  bothH:'雙向已說明',bothSub:'兩邊的描述都已指出何時改用對方，通常不需要再處理。',
  rep:'Markdown 報告（可貼進 PR）',repZh:'複製報告（中文）',repEn:'Copy report (English)',repPrev:'預覽報告',
  tTools:'工具數',tTok:'定義總 token（估）',tHi:'高度相似對（≥ 0.50）',tMid:'中度相似對（0.30–0.49）',tWeak:'說明不足的工具',
- hm:'相似度熱圖',hmSub:'顏色越深代表名稱、描述與參數越像。滑過或點一格看細節。',vs:' 與 ',sim:' 相似度 ',
+ hm:'相似度熱圖',hmSub:'顏色越深代表名稱、描述與參數越像。滑過或點一格看細節。',skipped:function(n){return '已略過 '+n+' 個 plugin 目錄（marketplaces）或 node_modules / .git 裡的 SKILL.md，它們不是你實際安裝的 skill。'},restored:'已還原你上次載入的內容(重新整理不會清掉;關閉分頁後才會清除)',hmFull:'全螢幕查看',hmBack:'返回',hmEsc:'按 Esc 也可以返回',vs:' 與 ',sim:' 相似度 ',
  twins:'最相似的組合',noTwins:'沒有相似度達 0.30 的工具對。名稱和描述區分得不錯。',shared:'共同詞：',sep:'、',
  adv:'在兩個描述各加一句「用在…，不要用在…」，講出差別（例如：處理哪一種輸入、回傳什麼）。',advParam:function(w){return ' 共同詞「'+w+'」多半來自參數，描述的差別要放在開頭。'},advSame:'這兩個名稱幾乎一樣，考慮合併成一個工具或改成不同動詞。',
  per:'每個工具的檢查',thName:'名稱',thTok:'token（估）',thFind:'發現',fine:'沒有明顯問題',isep:'；',
@@ -360,7 +369,7 @@ en:{h1:'Tool Twins',lede:'Paste an MCP server\'s tools/list result or SKILL.md f
  bothH:'Both sides explained',bothSub:'Each description already says when to use the other, so these usually need nothing more.',
  rep:'Markdown report (for a PR)',repZh:'複製報告（中文）',repEn:'Copy report (English)',repPrev:'Preview report',
  tTools:'tools',tTok:'definition tokens (est.)',tHi:'high-similarity pairs (≥ 0.50)',tMid:'medium pairs (0.30–0.49)',tWeak:'under-documented tools',
- hm:'Similarity heatmap',hmSub:'Darker means names, descriptions and parameters are more alike. Hover or tap a cell for details.',vs:' and ',sim:' similarity ',
+ hm:'Similarity heatmap',hmSub:'Darker means names, descriptions and parameters are more alike. Hover or tap a cell for details.',skipped:function(n){return 'Skipped '+n+' SKILL.md files under plugin marketplaces, node_modules or .git; they are not skills you installed.'},restored:'Restored what you loaded before the refresh (cleared when you close the tab).',hmFull:'Full screen',hmBack:'Back',hmEsc:'Esc also closes',vs:' and ',sim:' similarity ',
  twins:'Most similar pairs',noTwins:'No pair reaches 0.30. Names and descriptions are well separated.',shared:'Shared words: ',sep:', ',
  adv:'Add a "use this for…, not for…" sentence to both descriptions that states the difference (what input each takes, what it returns).',advParam:function(w){return ' The shared word "'+w+'" probably comes from a parameter, so put the difference at the start of the description.'},advSame:'These names are nearly identical. Consider merging them into one tool or using different verbs.',
  per:'Per-tool checks',thName:'Name',thTok:'tokens (est.)',thFind:'Findings',fine:'No obvious problems',isep:'; ',
@@ -771,6 +780,7 @@ var ICON={
   clean:'<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="m7.5 12.5 3 3 6-6.5"/></svg>'
 };
 function show(tools,copies){
+  hmClose(); // a re-render (new analysis or a language switch) never leaves a stale full-screen heatmap behind
   var R=analyze(tools),N=tools.length,h='',fam={};
   // when MCP tools and skills are mixed, every name in the results carries its source
   var mixed=tools.some(function(x){return x.source==='skill'})&&tools.some(function(x){return x.source!=='skill'});
@@ -913,7 +923,7 @@ function show(tools,copies){
      '<div class="tile"><div class="v">'+hi+'</div><div class="l">'+t('tHi')+'</div></div>'+
      '<div class="tile"><div class="v">'+mid+'</div><div class="l">'+t('tMid')+'</div></div>'+
      '<div class="tile"><div class="v">'+weak+'</div><div class="l">'+t('tWeak')+'</div></div></div>';
-  h+='<div class="card"><h2>'+t('hm')+'</h2><p class="sub">'+t('hmSub')+'</p><div class="hm"><div class="grid" style="grid-template-columns:150px repeat('+N+',26px)"><span></span>';
+  h+='<div class="card hmcard"><div class="hm-head"><h2>'+t('hm')+'</h2><button type="button" class="btn s hm-open" aria-haspopup="dialog">'+t('hmFull')+'</button></div><p class="sub">'+t('hmSub')+'</p><div class="hm"><div class="grid" style="grid-template-columns:150px repeat('+N+',26px);--n:'+N+'"><span></span>';
   for(var j=0;j<N;j++)h+='<span class="cl">'+(j+1)+'</span>';
   var tab=N>40?' tabindex="-1"':''; // past 40 tools the grid would be thousands of tab stops; the twin list and table carry the same findings
   for(var i=0;i<N;i++){
@@ -978,6 +988,8 @@ function show(tools,copies){
     }
     c.onmouseenter=put;c.onfocus=put;c.onclick=put;c.onmouseleave=function(){tip.style.display='none'};c.onblur=function(){tip.style.display='none'};
   });
+  var hmBtn=$('#out .hm-open');
+  if(hmBtn)hmBtn.onclick=function(){hmFull(hmBtn,N)};
 }
 // every input becomes one item shape: {source:'mcp'|'skill', name, description, params (MCP input properties), schema (MCP inputSchema), body (SKILL.md text after the frontmatter)}
 function mcpItem(x){
@@ -1050,6 +1062,31 @@ function itemsOf(raw,fallback,one){
   })};
 }
 var FILES=[]; // files added by picking or dropping: {label, items}
+// A refresh keeps what the user loaded: the box text and the added files are saved in sessionStorage, which lives only in this
+// tab, stays on this device and is gone when the tab closes. If it will not fit, the skill bodies (only used for an extra
+// token note) are dropped first; if it still does not fit or storage is blocked, nothing is kept and the page behaves as before.
+function saveState(){
+  try{
+    var v=$('#inp').value;
+    if(!FILES.length&&(!v.trim()||v===JSON.stringify(DEMO,null,1))){sessionStorage.removeItem('olab-state');return}
+    var st={inp:v===JSON.stringify(DEMO,null,1)?'':v,files:FILES};
+    try{sessionStorage.setItem('olab-state',JSON.stringify(st))}
+    catch(e){
+      st.files=FILES.map(function(f){return {label:f.label,items:f.items.map(function(x){var c=Object.assign({},x);delete c.body;return c})}});
+      sessionStorage.setItem('olab-state',JSON.stringify(st));
+    }
+  }catch(e){try{sessionStorage.removeItem('olab-state')}catch(e2){}}
+}
+function loadState(){
+  try{
+    var st=JSON.parse(sessionStorage.getItem('olab-state')||'null');
+    if(!st||!Array.isArray(st.files)||typeof st.inp!=='string')return false;
+    if(!st.files.length&&!st.inp.trim())return false;
+    FILES=st.files.filter(function(f){return f&&Array.isArray(f.items)});
+    $('#inp').value=st.inp;
+    return true;
+  }catch(e){return false}
+}
 // a chip shows what was added (the skill's name, or a JSON file's name and tool count), never the folder path;
 // past 6 files the chips fold under one line "Added 13 skills · Clear"
 function chipName(f){return f.items.length===1&&f.items[0].source==='skill'?f.items[0].name:f.label.split('/').pop()+' · '+f.items.length}
@@ -1059,7 +1096,7 @@ function renderFiles(){
   $('#flist').innerHTML=FILES.length>6?'<li class="fsum"><details><summary>'+esc(S[L].filesSum(ns,nt))+'</summary><ul class="flist">'+chips+'</ul></details><button type="button" class="link" id="fclear">'+t('clearAll')+'</button></li>':chips;
   document.querySelectorAll('#flist .rm').forEach(function(b){b.onclick=function(){var f=FILES.splice(+b.getAttribute('data-k'),1)[0];renderFiles();status(S[L].removed(chipName(f)))}});
   var c=$('#fclear');if(c)c.onclick=function(){FILES=[];renderFiles();status(t('cleared'))};
-  mixNote();
+  mixNote();saveState();
 }
 // with files added and the user's own text in the box, say that both are analyzed together
 function mixNote(){$('#mix').hidden=!(FILES.length&&$('#inp').value.trim())}
@@ -1079,11 +1116,18 @@ function addFiles(list){
     var cleared=$('#inp').value===JSON.stringify(DEMO,null,1);
     if(cleared)$('#inp').value='';
     renderFiles();
-    status(S[L].added(ns,nt)+(cleared?' '+t('demoCleared'):''));
+    var sk=SKIPPED;SKIPPED=0;
+    status(S[L].added(ns,nt)+(cleared?' '+t('demoCleared'):'')+(sk?' '+S[L].skipped(sk):''));
     $('#msg').textContent=bad.join(t('isep'));
   });
 }
-var wantTop=function(p){return /\.(md|json)$/i.test(p)},wantDeep=function(p){return /(^|\/)skill\.md$/i.test(p)}; // inside folders only SKILL.md counts
+var wantTop=function(p){return /\.(md|json)$/i.test(p)},wantDeep=function(p){
+  if(!/(^|\/)skill\.md$/i.test(p))return false; // inside folders only SKILL.md counts
+  // Someone may pick the whole .claude folder. Plugin marketplaces are catalog clones (not what is installed) and
+  // node_modules / .git hold copies of other projects, so those SKILL.md files are left out and counted for a note.
+  if(/(^|\/)(plugins\/marketplaces|node_modules|\.git)\//i.test(p)){SKIPPED++;return false}
+  return true;
+},SKIPPED=0;
 $('#pickF').onclick=function(){$('#fileF').click()};
 // Folder picking and folder drops need webkitdirectory and a desktop pointer; phones usually have neither.
 // There the folder button, the drop hint and the skills-location popover go, and a note points to the demo or pasting.
@@ -1093,14 +1137,62 @@ if(!folderOK){
   $('#drop').classList.add('nodrop');$('#mobileNote').hidden=false;
 }
 // "Where are my skills?" popover: opens below its button, closes on Esc, Close, or a click outside; focus goes back to the button
-function wherePop(open){
+// It also opens by itself when the mouse rests on the button or the button gets keyboard focus (no click needed);
+// a click pins it open so the copy buttons stay reachable. quiet = opened or closed by hovering, focus stays where it is.
+var wherePinned=false,whereTimer=null,whereSkip=false;
+function wherePop(open,quiet){
+  clearTimeout(whereTimer);
   $('#wherePop').hidden=!open;$('#whereBtn').setAttribute('aria-expanded',open?'true':'false');
-  if(open)$('#wherePop .cp').focus();else $('#whereBtn').focus();
+  if(!open)wherePinned=false;
+  if(quiet)return;
+  if(open)$('#wherePop .cp').focus();else{whereSkip=true;$('#whereBtn').focus();whereSkip=false} // whereSkip: this focus must not reopen it
 }
-$('#whereBtn').onclick=function(){wherePop($('#wherePop').hidden)};
+var whereEl=$('.where');
+if(window.matchMedia&&matchMedia('(hover: hover)').matches){
+  whereEl.addEventListener('mouseenter',function(){clearTimeout(whereTimer);if($('#wherePop').hidden)wherePop(true,true)});
+  whereEl.addEventListener('mouseleave',function(){if(wherePinned)return;whereTimer=setTimeout(function(){if(!wherePinned)wherePop(false,true)},200)}); // a short delay lets the pointer cross the gap to the popup
+}
+whereEl.addEventListener('focusin',function(e){if(!whereSkip&&e.target.id==='whereBtn'&&$('#wherePop').hidden)wherePop(true,true)});
+whereEl.addEventListener('focusout',function(e){if(wherePinned||whereEl.contains(e.relatedTarget))return;whereTimer=setTimeout(function(){if(!wherePinned)wherePop(false,true)},200)});
+$('#whereBtn').onclick=function(){
+  clearTimeout(whereTimer);
+  if($('#wherePop').hidden){wherePop(true);wherePinned=true}
+  else if(!wherePinned)wherePinned=true; // it opened on hover: the click keeps it open
+  else wherePop(false);
+};
 $('#whereClose').onclick=function(){wherePop(false)};
 document.addEventListener('keydown',function(e){if(e.key==='Escape'&&!$('#wherePop').hidden){e.preventDefault();wherePop(false)}});
-document.addEventListener('click',function(e){if(!$('#wherePop').hidden&&!e.target.closest('.where'))wherePop(false)});
+document.addEventListener('click',function(e){if(!$('#wherePop').hidden&&!e.target.closest('.where'))wherePop(false,true)});
+// Heatmap full screen: the same .hm node moves into a fixed overlay (its tooltips keep working) and back on close.
+// Esc or the Back button closes it; focus returns to the button that opened it.
+var hmState=null;
+function hmClose(){
+  if(!hmState)return;
+  var s=hmState;hmState=null;
+  s.home.insertBefore(s.hm,s.next);
+  s.ov.remove();document.body.style.overflow=s.overflow;$('#tip').style.display='none';
+  s.inert.forEach(function(el){el.inert=false});
+  window.removeEventListener('resize',s.onResize);
+  if(s.btn&&document.contains(s.btn))s.btn.focus();
+}
+function hmFull(btn,N){
+  if(hmState)return;
+  var hm=btn.closest('.hmcard').querySelector('.hm'),grid=hm.firstChild;
+  var ov=document.createElement('div');
+  ov.className='hm-full';ov.setAttribute('role','dialog');ov.setAttribute('aria-modal','true');ov.setAttribute('aria-label',t('hm'));
+  ov.innerHTML='<div class="hm-bar"><h2>'+esc(t('hm'))+'</h2><span class="note">'+esc(t('hmEsc'))+'</span><button type="button" class="btn p s hm-back">'+esc(t('hmBack'))+'</button></div><div class="hm-body"></div>';
+  var inert=[].filter.call(document.body.children,function(el){return !/^(SCRIPT|STYLE|META|NOSCRIPT)$/.test(el.tagName)&&el.id!=='tip'});
+  hmState={ov:ov,hm:hm,home:hm.parentNode,next:hm.nextSibling,btn:btn,overflow:document.body.style.overflow,inert:inert};
+  ov.querySelector('.hm-body').appendChild(hm);
+  // cell size: as large as fits the width (label column 170px, 2px gaps), kept between 18 and 40px; a tall grid scrolls up and down
+  function size(){grid.style.setProperty('--cs',Math.max(18,Math.min(40,Math.floor((window.innerWidth-32-170-2*N)/N),Math.floor((window.innerHeight-130)/N)-2))+'px')}
+  hmState.onResize=size;size();window.addEventListener('resize',size);
+  inert.forEach(function(el){el.inert=true});
+  document.body.appendChild(ov);document.body.style.overflow='hidden';
+  ov.querySelector('.hm-back').onclick=hmClose;
+  ov.querySelector('.hm-back').focus();
+}
+document.addEventListener('keydown',function(e){if(e.key==='Escape'&&hmState){e.preventDefault();hmClose()}});
 document.querySelectorAll('#wherePop .cp').forEach(function(b){b.onclick=function(){
   copyText(document.getElementById(b.getAttribute('data-path')).textContent).then(function(){b.textContent=t('copied')},function(){b.textContent=t('copyFail')});
   setTimeout(function(){b.textContent=t('copyPath')},2000);
@@ -1216,12 +1308,13 @@ function analyzeFrom(b){
 }
 $('#run').onclick=function(){analyzeFrom($('#run'))};
 // "Try the demo": load the demo, analyze, scroll to the results
-$('#tryDemo').onclick=function(){$('#inp').value=JSON.stringify(DEMO,null,1);mixNote();analyzeFrom($('#tryDemo'))};
-$('#demo').onclick=function(){$('#inp').value=JSON.stringify(DEMO,null,1);mixNote();run()};
-$('#inp').addEventListener('input',mixNote);
+$('#tryDemo').onclick=function(){$('#inp').value=JSON.stringify(DEMO,null,1);mixNote();saveState();analyzeFrom($('#tryDemo'))};
+$('#demo').onclick=function(){$('#inp').value=JSON.stringify(DEMO,null,1);mixNote();saveState();run()};
+var saveT=null;
+$('#inp').addEventListener('input',function(){mixNote();clearTimeout(saveT);saveT=setTimeout(saveState,400)});
 $('#repoLink').href=REPO_URL;
 lang();
-$('#inp').value=JSON.stringify(DEMO,null,1);run();
+if(loadState()){renderFiles();run();status(t('restored'))}else{$('#inp').value=JSON.stringify(DEMO,null,1);run()}
 })();
 </script>
 </body>
