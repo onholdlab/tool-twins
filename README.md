@@ -1,3 +1,12 @@
+**Tool Twins** checks whether your Claude skills and MCP tools compete for the same requests. It flags pairs whose names or descriptions are close enough for a model to pick the wrong one. For each pair it suggests a "not for … use … instead" line, and it estimates the tokens each item costs in every conversation. It is a heuristic and can raise false alarms or miss real twins.
+
+- **Use:** open https://onholdlab.github.io/tool-twins/ (or download `index.html`), then choose your skills folder (`~/.claude/skills`), pick a file, or paste text. Or press "Try the demo".
+- **Private:** everything runs in your browser. The page makes no network requests and nothing is uploaded.
+- **How pairs are flagged:** skills are compared on their descriptions. A pair is listed under "Fix first" at similarity ≥ 0.50, or with shared trigger words (two words or one quoted phrase) at similarity ≥ 0.30, when neither side points at the other with an exclusion or a routing clause ("For …, use other-skill"). Trigger-only pairs under 0.30 sit in a collapsed "weak signal" block and are not counted.
+- **Wrong result?** Report a false alarm or a missed twin with the [wrong-result form](https://github.com/onholdlab/tool-twins/issues/new?template=wrong-result.yml) (remove sensitive content from any description you paste). Other ideas: [suggestions](https://github.com/onholdlab/tool-twins/issues/new?template=feedback.yml).
+- **Did this tool help you?** Answer with one click in [this poll](https://github.com/onholdlab/tool-twins/discussions/2); no issue needed.
+- **License:** Apache License 2.0 (see [LICENSE](LICENSE)) for the code. The README and the page's explanatory text (which lives in index.html, a code file that stays under Apache License 2.0) are also available under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/), attribution "onholdlab", © 2026 onholdlab. Third-party demo data is credited in [NOTICE](NOTICE) and keeps its own licenses. The names and logos are not covered by these licenses.
+
 # 工具雙胞胎 Tool Twins
 
 檢查你的 skills 會不會互相搶觸發。
@@ -54,13 +63,4 @@ skill 只比較描述。兩個 skill 列為「需要先處理」的條件：描�
 
 ---
 
-## English
 
-**Tool Twins** checks whether your Claude skills and MCP tools compete for the same requests. It flags pairs whose names or descriptions are close enough for a model to pick the wrong one. For each pair it suggests a "not for … use … instead" line, and it estimates the tokens each item costs in every conversation. It is a heuristic and can raise false alarms or miss real twins.
-
-- **Use:** open https://onholdlab.github.io/tool-twins/ (or download `index.html`), then choose your skills folder (`~/.claude/skills`), pick a file, or paste text. Or press "Try the demo".
-- **Private:** everything runs in your browser. The page makes no network requests and nothing is uploaded.
-- **How pairs are flagged:** skills are compared on their descriptions. A pair is listed under "Fix first" at similarity ≥ 0.50, or with shared trigger words (two words or one quoted phrase) at similarity ≥ 0.30, when neither side points at the other with an exclusion or a routing clause ("For …, use other-skill"). Trigger-only pairs under 0.30 sit in a collapsed "weak signal" block and are not counted.
-- **Wrong result?** Report a false alarm or a missed twin with the [wrong-result form](https://github.com/onholdlab/tool-twins/issues/new?template=wrong-result.yml) (remove sensitive content from any description you paste). Other ideas: [suggestions](https://github.com/onholdlab/tool-twins/issues/new?template=feedback.yml).
-- **Did this tool help you?** Answer with one click in [this poll](https://github.com/onholdlab/tool-twins/discussions/2); no issue needed.
-- **License:** Apache License 2.0 (see [LICENSE](LICENSE)) for the code. The README and the page's explanatory text (which lives in index.html, a code file that stays under Apache License 2.0) are also available under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/), attribution "onholdlab", © 2026 onholdlab. Third-party demo data is credited in [NOTICE](NOTICE) and keeps its own licenses. The names and logos are not covered by these licenses.
