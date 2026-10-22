@@ -323,7 +323,7 @@ zh:{h1:'工具雙胞胎',lede:'貼上 MCP 伺服器的 tools/list 結果、SKILL
  bothH:'雙向已說明',bothSub:'兩邊的描述都已指出何時改用對方，通常不需要再處理。',
  rep:'Markdown 報告（可貼進 PR）',repZh:'複製報告（中文）',repEn:'Copy report (English)',repPrev:'預覽報告',
  tTools:'工具數',tTok:'定義總 token（估）',tHi:'高度相似對（≥ 0.50）',tMid:'中度相似對（0.30–0.49）',tWeak:'說明不足的工具',
- hm:'相似度熱圖',hmSub:'顏色越深代表名稱、描述與參數越像。滑過或點一格看細節。',skipped:function(n){return '已略過 '+n+' 個 plugin 目錄（marketplaces）或 node_modules / .git 裡的 SKILL.md，它們不是你實際安裝的 skill。'},restored:'已還原你上次載入的內容(重新整理不會清掉;關閉分頁後才會清除)',hmFull:'全螢幕查看',hmBack:'返回',hmEsc:'按 Esc 也可以返回',vs:' 與 ',sim:' 相似度 ',
+ hm:'相似度熱圖',hmSub:'顏色越深代表名稱、描述與參數越像。滑過或點一格看細節。',skipped:function(n){return '已略過 '+n+' 個 plugin 目錄（marketplaces）或 node_modules / .git 裡的 SKILL.md，它們不是你實際安裝的 skill。'},scanning:'掃描資料夾中…',scanCap:'資料夾太大或太深，掃描提早停止，結果可能不完整。建議只選 skills 資料夾。',skipDirs:function(n){return '已略過 '+n+' 個不相關的資料夾（node_modules、.git、AppData、plugins/marketplaces 等）。'},dupWhy:function(l){return '這只是比對名稱文字：這些同名項目來自 '+l+'。如果只是同一個 skill 的不同版本副本，或不同 plugin 裡的 skill（plugin 的 skill 通常以 plugin 名稱當前綴，實際不會撞名），就不是真的衝突。本工具無法從資料夾路徑確認這點，請自行判斷再決定要不要改名。'},plugNote:function(n){return '注意：有 '+n+' 個項目來自 plugins 目錄。多版本或重複安裝可能讓數量與相似組合偏高；下方建議依描述文字推論，不代表實際會誤選。'},restored:'已還原你上次載入的內容(重新整理不會清掉;關閉分頁後才會清除)',hmFull:'全螢幕查看',hmBack:'返回',hmEsc:'按 Esc 也可以返回',vs:' 與 ',sim:' 相似度 ',
  twins:'最相似的組合',noTwins:'沒有相似度達 0.30 的工具對。名稱和描述區分得不錯。',shared:'共同詞：',sep:'、',
  adv:'在兩個描述各加一句「用在…，不要用在…」，講出差別（例如：處理哪一種輸入、回傳什麼）。',advParam:function(w){return ' 共同詞「'+w+'」多半來自參數，描述的差別要放在開頭。'},advSame:'這兩個名稱幾乎一樣，考慮合併成一個工具或改成不同動詞。',
  per:'每個工具的檢查',thName:'名稱',thTok:'token（估）',thFind:'發現',fine:'沒有明顯問題',isep:'；',
@@ -369,7 +369,7 @@ en:{h1:'Tool Twins',lede:'Paste an MCP server\'s tools/list result or SKILL.md f
  bothH:'Both sides explained',bothSub:'Each description already says when to use the other, so these usually need nothing more.',
  rep:'Markdown report (for a PR)',repZh:'複製報告（中文）',repEn:'Copy report (English)',repPrev:'Preview report',
  tTools:'tools',tTok:'definition tokens (est.)',tHi:'high-similarity pairs (≥ 0.50)',tMid:'medium pairs (0.30–0.49)',tWeak:'under-documented tools',
- hm:'Similarity heatmap',hmSub:'Darker means names, descriptions and parameters are more alike. Hover or tap a cell for details.',skipped:function(n){return 'Skipped '+n+' SKILL.md files under plugin marketplaces, node_modules or .git; they are not skills you installed.'},restored:'Restored what you loaded before the refresh (cleared when you close the tab).',hmFull:'Full screen',hmBack:'Back',hmEsc:'Esc also closes',vs:' and ',sim:' similarity ',
+ hm:'Similarity heatmap',hmSub:'Darker means names, descriptions and parameters are more alike. Hover or tap a cell for details.',skipped:function(n){return 'Skipped '+n+' SKILL.md files under plugin marketplaces, node_modules or .git; they are not skills you installed.'},scanning:'Scanning folder…',scanCap:'The folder is too large or deep; the scan stopped early and results may be incomplete. Pick the skills folder instead.',skipDirs:function(n){return 'Skipped '+n+' unrelated folders (node_modules, .git, AppData, plugins/marketplaces and similar).'},dupWhy:function(l){return 'This only compares name text: these same-name items come from '+l+'. If they are versions of one skill, or skills inside different plugins (plugin skills are usually prefixed with the plugin name, so they would not really collide), it is not a real conflict. The tool cannot confirm that from folder paths, so judge before renaming.'},plugNote:function(n){return 'Note: '+n+' items come from plugin folders. Several versions or repeated installs can inflate the counts and similar pairs; the advice below is inferred from description text and does not mean the model will actually choose wrong.'},restored:'Restored what you loaded before the refresh (cleared when you close the tab).',hmFull:'Full screen',hmBack:'Back',hmEsc:'Esc also closes',vs:' and ',sim:' similarity ',
  twins:'Most similar pairs',noTwins:'No pair reaches 0.30. Names and descriptions are well separated.',shared:'Shared words: ',sep:', ',
  adv:'Add a "use this for…, not for…" sentence to both descriptions that states the difference (what input each takes, what it returns).',advParam:function(w){return ' The shared word "'+w+'" probably comes from a parameter, so put the difference at the start of the description.'},advSame:'These names are nearly identical. Consider merging them into one tool or using different verbs.',
  per:'Per-tool checks',thName:'Name',thTok:'tokens (est.)',thFind:'Findings',fine:'No obvious problems',isep:'; ',
@@ -837,7 +837,13 @@ function show(tools,copies){
   var oneP=R.pairs.filter(isOneSided),trigP=R.pairs.filter(isTrigOnly),bothP=R.pairs.filter(function(p){return p.excl==='both'&&p.tag!=='sub'});
   var styles={};tools.forEach(function(x){if(x.source!=='skill')styles[nameStyle(x.name)]=1}); // skill names follow their own kebab-case convention
 
-  if(dups.length)h+='<p class="msg">'+esc(S[L].dup(dups.join(t('sep'))))+'</p>';
+  if(dups.length){
+    h+='<p class="msg">'+esc(S[L].dup(dups.join(t('sep'))))+'</p>';
+    var src=[];tools.forEach(function(x){if(cnt[x.name]>1)src.push(x.name+' ← '+(x.from&&x.from.length?x.from[0]:'?'))});
+    h+='<p class="note">'+esc(S[L].dupWhy(src.slice(0,6).join(t('sep'))+(src.length>6?' …':'')))+'</p>';
+  }
+  var plug=tools.filter(function(x){return (x.from||[]).some(function(f){return /(^|\/)plugins\//i.test(f)})}).length;
+  if(plug)h+='<p class="note">'+esc(S[L].plugNote(plug))+'</p>';
   // one line per copied item: not a conflict, so not counted as a pair, a rename or tokens to save
   (copies||[]).forEach(function(x){
     var n={};x.from.forEach(function(f){n[f]=(n[f]||0)+1});
@@ -1116,8 +1122,8 @@ function addFiles(list){
     var cleared=$('#inp').value===JSON.stringify(DEMO,null,1);
     if(cleared)$('#inp').value='';
     renderFiles();
-    var sk=SKIPPED;SKIPPED=0;
-    status(S[L].added(ns,nt)+(cleared?' '+t('demoCleared'):'')+(sk?' '+S[L].skipped(sk):''));
+    var sk=SKIPPED,sd=SCAN.dirs,cap=SCAN.capped;SKIPPED=0;SCAN.dirs=0;SCAN.capped=false;
+    status(S[L].added(ns,nt)+(cleared?' '+t('demoCleared'):'')+(sk?' '+S[L].skipped(sk):'')+(sd?' '+S[L].skipDirs(sd):'')+(cap?' '+t('scanCap'):''));
     $('#msg').textContent=bad.join(t('isep'));
   });
 }
@@ -1200,13 +1206,24 @@ document.querySelectorAll('#wherePop .cp').forEach(function(b){b.onclick=functio
 $('#pickD').onclick=function(){$('#fileD').click()};
 $('#fileF').onchange=function(){addFiles([].filter.call(this.files,function(f){return wantTop(f.name)}).map(function(f){return {path:f.name,file:f}}));this.value=''};
 $('#fileD').onchange=function(){addFiles([].filter.call(this.files,function(f){return wantDeep(f.webkitRelativePath||f.name)}).map(function(f){return {path:f.webkitRelativePath||f.name,file:f}}));this.value=''};
-function walk(entry,path,deep,acc){
-  // directory readers return entries in batches; read until an empty batch
-  if(entry.isFile)return new Promise(function(res){entry.file(function(f){if((deep?wantDeep:wantTop)(path))acc.push({path:path,file:f});res()},function(){res()})});
+// Dropping a big folder (a whole home folder, say) must not freeze the page: well-known heavy or irrelevant folders are not entered,
+// the walk is at most 8 levels deep and stops after 20,000 entries; the status line says when either happened.
+var PRUNE=/^(node_modules|\.git|appdata|\$recycle\.bin|windows|program files|program files \(x86\)|programdata|library|\.cache|\.npm|\.venv|venv|__pycache__|\.gradle|\.m2|\.cargo|\.rustup)$/i,
+    SCAN={dirs:0,capped:false,n:0},SCAN_MAX=20000,DEPTH_MAX=8;
+function walk(entry,path,deep,acc,depth){
+  depth=depth||0;
+  if(SCAN.capped)return Promise.resolve();
+  if(++SCAN.n>SCAN_MAX){SCAN.capped=true;return Promise.resolve()}
+  if(entry.isFile)return new Promise(function(res){
+    if(!(deep?wantDeep:wantTop)(path))return res(); // only SKILL.md (or a top-level .md/.json) is opened
+    entry.file(function(f){acc.push({path:path,file:f});res()},function(){res()});
+  });
   if(!entry.isDirectory)return Promise.resolve();
+  if(deep&&(PRUNE.test(entry.name)||/(^|\/)plugins\/marketplaces$/i.test(path))){SCAN.dirs++;return Promise.resolve()}
+  if(depth>=DEPTH_MAX){SCAN.capped=true;return Promise.resolve()}
   var rd=entry.createReader();
   return new Promise(function(res){
-    var all=[];(function more(){rd.readEntries(function(es){if(!es.length)return res(Promise.all(all.map(function(e){return walk(e,path+'/'+e.name,true,acc)})));all=all.concat([].slice.call(es));more()},function(){res()})})();
+    var all=[];(function more(){rd.readEntries(function(es){if(!es.length)return res(Promise.all(all.map(function(e){return walk(e,path+'/'+e.name,true,acc,depth+1)})));all=all.concat([].slice.call(es));if(SCAN.capped)return res();more()},function(){res()})})();
   });
 }
 var drop=$('#drop');
@@ -1217,7 +1234,8 @@ drop.addEventListener('drop',function(e){
   e.preventDefault();drop.classList.remove('over');
   var acc=[],its=[].slice.call(e.dataTransfer.items||[]).map(function(x){return x.webkitGetAsEntry&&x.webkitGetAsEntry()}).filter(Boolean);
   if(!its.length){addFiles([].filter.call(e.dataTransfer.files,function(f){return wantTop(f.name)}).map(function(f){return {path:f.name,file:f}}));return}
-  Promise.all(its.map(function(en){return walk(en,en.name,false,acc)})).then(function(){addFiles(acc)});
+  SCAN.dirs=0;SCAN.capped=false;SCAN.n=0;status(t('scanning'));
+  setTimeout(function(){Promise.all(its.map(function(en){return walk(en,en.name,false,acc,0)})).then(function(){addFiles(acc)})},20); // a frame for the status to paint first
 });
 // Copies: the same source, name, description and input schema loaded more than once (a skill installed in two places, a file picked
 // twice) become one item that remembers every place it came from. Same name with different content is not a copy: that keeps the
@@ -1313,6 +1331,7 @@ $('#demo').onclick=function(){$('#inp').value=JSON.stringify(DEMO,null,1);mixNot
 var saveT=null;
 $('#inp').addEventListener('input',function(){mixNote();clearTimeout(saveT);saveT=setTimeout(saveState,400)});
 $('#repoLink').href=REPO_URL;
+try{if(location.search&&history.replaceState)history.replaceState(null,'',location.pathname+location.hash)}catch(e){} // drop ?utm_… / fbclid so the address bar stays short
 lang();
 if(loadState()){renderFiles();run();status(t('restored'))}else{$('#inp').value=JSON.stringify(DEMO,null,1);run()}
 })();
